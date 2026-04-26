@@ -21,6 +21,21 @@ public class MatchHistoryDto {
     @NotBlank(message = "Hasil pertandingan wajib diisi")
     private String matchResult;
 
+    @NotBlank(message = "Car model ID wajib diisi")
+    private String carModelId;
+
+    @Min(value = 0, message = "Demolitions tidak boleh negatif")
+    private int matchDemolitions;
+
+    @Min(value = 0, message = "Saves tidak boleh negatif")
+    private int matchSaves;
+
+    @Min(value = 0, message = "Assists tidak boleh negatif")
+    private int matchAssists;
+
+    @Min(value = 0, message = "Backward goals tidak boleh negatif")
+    private int matchBackwardGoals;
+
     public String getPlayer1Id() {
         return player1Id;
     }
@@ -59,5 +74,45 @@ public class MatchHistoryDto {
 
     public void setMatchResult(String matchResult) {
         this.matchResult = matchResult;
+    }
+
+    public String getCarModelId() {
+        return carModelId;
+    }
+
+    public void setCarModelId(String carModelId) {
+        this.carModelId = carModelId;
+    }
+
+    public int getMatchDemolitions() {
+        return matchDemolitions;
+    }
+
+    public void setMatchDemolitions(int matchDemolitions) {
+        this.matchDemolitions = matchDemolitions;
+    }
+
+    public int getMatchSaves() {
+        return matchSaves;
+    }
+
+    public void setMatchSaves(int matchSaves) {
+        this.matchSaves = matchSaves;
+    }
+
+    public int getMatchAssists() {
+        return matchAssists;
+    }
+
+    public void setMatchAssists(int matchAssists) {
+        this.matchAssists = matchAssists;
+    }
+
+    public int getMatchBackwardGoals() {
+        return matchBackwardGoals;
+    }
+
+    public void setMatchBackwardGoals(int matchBackwardGoals) {
+        this.matchBackwardGoals = matchBackwardGoals;
     }
 }
