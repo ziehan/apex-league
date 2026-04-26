@@ -6,6 +6,6 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface MatchHistoryRepository extends JpaRepository<MatchHistory, Long> {
+public interface MatchHistoryRepository extends JpaRepository<MatchHistory, String> {
     List<MatchHistory> findByPlayer1IdOrderByCreatedAtDesc(String player1Id);
 }

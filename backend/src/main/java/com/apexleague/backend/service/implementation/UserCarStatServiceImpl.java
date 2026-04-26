@@ -1,7 +1,8 @@
-package com.apexleague.backend.service;
+package com.apexleague.backend.service.implementation;
 
 import com.apexleague.backend.model.UserCarStat;
 import com.apexleague.backend.repository.UserCarStatRepository;
+import com.apexleague.backend.service.UserCarStatService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -1,12 +1,15 @@
-package com.apexleague.backend.service;
+package com.apexleague.backend.service.implementation;
 
 import com.apexleague.backend.dto.UserRegistrationDto;
 import com.apexleague.backend.dto.UserResponseDto;
 import com.apexleague.backend.model.User;
 import com.apexleague.backend.repository.UserRepository;
+import com.apexleague.backend.service.UserService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -69,11 +72,36 @@ public class UserServiceImpl implements UserService {
         UserResponseDto responseDto = new UserResponseDto();
         responseDto.setId(user.getId());
         responseDto.setUsername(user.getUsername());
+        responseDto.setCreatedAt(user.getCreatedAt());
+        responseDto.setTotalMatchPlayed(user.getTotalMatchPlayed());
+        responseDto.setTotalWins(user.getTotalWins());
         responseDto.setTotalGoals(user.getTotalGoals());
         responseDto.setTotalBackwardGoals(user.getTotalBackwardGoals());
         responseDto.setTotalAssists(user.getTotalAssists());
         responseDto.setTotalSaves(user.getTotalSaves());
         responseDto.setTotalDemolitions(user.getTotalDemolitions());
+        responseDto.setTotalHatTricks(user.getTotalHatTricks());
+
+        if (user.getTotalMatchPlayed() > 0) {
+            double goalsPerMatch = (double) user.getTotalGoals() / user.getTotalMatchPlayed();
+            double assistsPerMatch = (double) user.getTotalAssists() / user.getTotalMatchPlayed();
+            double savesPerMatch = (double) user.getTotalSaves() / user.getTotalMatchPlayed();
+
+            responseDto.setGoalPerMatch(roundToTwoDecimals(goalsPerMatch));
+            responseDto.setAssistPerMatch(roundToTwoDecimals(assistsPerMatch));
+            responseDto.setSavesPerMatch(roundToTwoDecimals(savesPerMatch));
+        } else {
+            responseDto.setGoalPerMatch(0.0);
+            responseDto.setAssistPerMatch(0.0);
+            responseDto.setSavesPerMatch(0.0);
+        }
+
         return responseDto;
+    }
+
+    private double roundToTwoDecimals(double value) {
+        return BigDecimal.valueOf(value)
+                .setScale(2, RoundingMode.HALF_UP)
+                .doubleValue();
     }
 }

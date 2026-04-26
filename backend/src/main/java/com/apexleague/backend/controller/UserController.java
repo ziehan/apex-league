@@ -9,6 +9,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
+import java.util.LinkedHashMap;
 
 @RestController
 @RequestMapping("/api/users")
@@ -40,9 +42,15 @@ public class UserController {
         return ResponseEntity.ok(userService.getTopPlayersByGoals());
     }
 
-    @DeleteMapping("/id/{userId}")
-    public ResponseEntity<Void> deleteUser(@PathVariable String userId) {
-        userService.deleteUserById(userId);
-        return ResponseEntity.noContent().build();
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Map<String, String>> deleteUser(@PathVariable String id) {
+        userService.deleteUserById(id);
+
+        Map<String, String> response = new LinkedHashMap<>();
+        response.put("status", "success");
+        response.put("message", "User berhasil dihapus");
+        response.put("userId", id);
+
+        return ResponseEntity.ok(response);
     }
 }

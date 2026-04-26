@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import org.hibernate.annotations.CreationTimestamp;
+
 import java.time.LocalDateTime;
 
 @Entity
@@ -22,6 +24,12 @@ public class User {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @Column(name = "total_match_played")
+    private int totalMatchPlayed = 0;
+
+    @Column(name = "total_wins")
+    private int totalWins = 0;
+
     @Column(name = "total_goals")
     private int totalGoals = 0;
 
@@ -37,7 +45,11 @@ public class User {
     @Column(name = "total_demolitions")
     private int totalDemolitions = 0;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
+    @Column(name = "total_hat_tricks")
+    private int totalHatTricks = 0;
+
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     public String getId() { return id; }
@@ -46,6 +58,10 @@ public class User {
     public void setUsername(String username) { this.username = username; }
     public String getPasswordHash() { return passwordHash; }
     public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
+    public int getTotalMatchPlayed() { return totalMatchPlayed; }
+    public void setTotalMatchPlayed(int totalMatchPlayed) { this.totalMatchPlayed = totalMatchPlayed; }
+    public int getTotalWins() { return totalWins; }
+    public void setTotalWins(int totalWins) { this.totalWins = totalWins; }
     public int getTotalGoals() { return totalGoals; }
     public void setTotalGoals(int totalGoals) { this.totalGoals = totalGoals; }
     public int getTotalBackwardGoals() { return totalBackwardGoals; }
@@ -56,6 +72,8 @@ public class User {
     public void setTotalSaves(int totalSaves) { this.totalSaves = totalSaves; }
     public int getTotalDemolitions() { return totalDemolitions; }
     public void setTotalDemolitions(int totalDemolitions) { this.totalDemolitions = totalDemolitions; }
+    public int getTotalHatTricks() { return totalHatTricks; }
+    public void setTotalHatTricks(int totalHatTricks) { this.totalHatTricks = totalHatTricks; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }

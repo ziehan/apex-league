@@ -1,6 +1,7 @@
 package com.apexleague.backend.model;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
 
 @Entity
@@ -8,8 +9,8 @@ import java.time.LocalDateTime;
 public class MatchHistory {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.UUID)
+    private String id;
 
     @Column(name = "player1_id", nullable = false)
     private String player1Id;
@@ -26,11 +27,12 @@ public class MatchHistory {
     @Column(name = "match_result", nullable = false)
     private String matchResult;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    public String getId() { return id; }
+    public void setId(String id) { this.id = id; }
     public String getPlayer1Id() { return player1Id; }
     public void setPlayer1Id(String player1Id) { this.player1Id = player1Id; }
     public String getPlayer2Name() { return player2Name; }

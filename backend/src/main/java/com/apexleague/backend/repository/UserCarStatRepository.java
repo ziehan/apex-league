@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface UserCarStatRepository extends JpaRepository<UserCarStat, Integer> {
+public interface UserCarStatRepository extends JpaRepository<UserCarStat, String> {
     List<UserCarStat> findByUserId(String userId);
     Optional<UserCarStat> findByUserIdAndCarModelId(String userId, String carModelId);
 }

@@ -31,7 +31,7 @@ public class MatchHistoryController {
     }
 
     @DeleteMapping("/{matchId}")
-    public ResponseEntity<Void> deleteMatch(@PathVariable Long matchId) {
+    public ResponseEntity<Void> deleteMatch(@PathVariable String matchId) {
         matchHistoryService.deleteMatchById(matchId);
         return ResponseEntity.noContent().build();
     }
