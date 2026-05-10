@@ -4,8 +4,10 @@ import com.apexleague.game.components.InputComponent;
 import com.apexleague.game.components.JumpComponent;
 import com.apexleague.game.components.PhysicsComponent;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
+import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.badlogic.gdx.physics.box2d.World;
@@ -21,25 +23,46 @@ public final class PlayerEntity {
 
         Body body = world.createBody(bodyDef);
 
-        PolygonShape shape = new PolygonShape();
-        shape.setAsBox(0.8f, 1.4f);
+        float halfWidth = 0.512f;
+        float halfHeight = 0.896f;
+        float radius = halfWidth;
+        float boxHalfHeight = halfHeight - radius;
+
+        PolygonShape boxShape = new PolygonShape();
+        boxShape.setAsBox(halfWidth, boxHalfHeight);
+
+        CircleShape topShape = new CircleShape();
+        topShape.setRadius(radius);
+        topShape.setPosition(new Vector2(0f, boxHalfHeight));
+
+        CircleShape bottomShape = new CircleShape();
+        bottomShape.setRadius(radius);
+        bottomShape.setPosition(new Vector2(0f, -boxHalfHeight));
 
         FixtureDef fixtureDef = new FixtureDef();
-        fixtureDef.shape = shape;
         fixtureDef.density = 1f;
         fixtureDef.friction = 0.3f;
 
-        body.createFixture(fixtureDef);
+        fixtureDef.shape = boxShape;
+        body.createFixture(fixtureDef).setUserData("PLAYER");
+        fixtureDef.shape = topShape;
+        body.createFixture(fixtureDef).setUserData("PLAYER");
+        fixtureDef.shape = bottomShape;
+        body.createFixture(fixtureDef).setUserData("PLAYER");
+
         body.setLinearDamping(1.5f);
         body.setAngularDamping(4f);
 
-        shape.dispose();
+        boxShape.dispose();
+        topShape.dispose();
+        bottomShape.dispose();
 
         Entity player = new Entity();
-        player.add(new PhysicsComponent(body));
+        PhysicsComponent physicsComponent = new PhysicsComponent(body);
+        player.add(physicsComponent);
         player.add(new InputComponent());
         player.add(new JumpComponent(jumpForce));
+        body.setUserData(physicsComponent);
         return player;
     }
 }
-
