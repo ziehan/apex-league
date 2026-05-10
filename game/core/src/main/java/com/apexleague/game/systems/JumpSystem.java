@@ -12,7 +12,7 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.math.Vector2;
 
 public class JumpSystem extends IteratingSystem {
-    private static final float DEFAULT_JUMP_COOLDOWN = 0.5f;
+    private static final float DEFAULT_JUMP_COOLDOWN = 1.5f;
 
     private final ComponentMapper<PhysicsComponent> physicsMapper = ComponentMapper.getFor(PhysicsComponent.class);
     private final ComponentMapper<JumpComponent> jumpMapper = ComponentMapper.getFor(JumpComponent.class);
@@ -46,21 +46,20 @@ public class JumpSystem extends IteratingSystem {
             return;
         }
 
-        float dx = (Gdx.input.isKeyPressed(Input.Keys.A) ? -1f : 0f) + (Gdx.input.isKeyPressed(Input.Keys.D) ? 1f : 0f);
-        float dy = (Gdx.input.isKeyPressed(Input.Keys.S) ? -1f : 0f) + (Gdx.input.isKeyPressed(Input.Keys.W) ? 1f : 0f);
+        float dx = input.moveX;
+        float dy = input.moveY;
 
         if (dx == 0f && dy == 0f) {
-            input.jump = false;
-            return;
+            dy = 1f;
         }
 
         jumpDirection.set(dx, dy).nor();
-        impulse.set(jumpDirection).scl(jump.jumpForce);
-        physics.body.applyLinearImpulse(impulse, physics.body.getWorldCenter(), true);
+        Vector2 currentVel = physics.body.getLinearVelocity();
+        physics.body.setLinearVelocity(currentVel.scl(0.3f).add(impulse.set(physics.body.getWorldVector(jumpDirection)).scl(25f)));
+        physics.dashTimer = 0.4f;
 
         jump.isJumping = true;
         jump.jumpCooldown = DEFAULT_JUMP_COOLDOWN;
         input.jump = false;
     }
 }
-

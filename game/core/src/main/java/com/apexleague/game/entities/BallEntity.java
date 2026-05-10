@@ -10,7 +10,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 
 public final class BallEntity {
-    private static final float BALL_RADIUS = 0.75f;
+    private static final float BALL_RADIUS = 0.6016f;
 
     private BallEntity() {
     }
@@ -28,7 +28,7 @@ public final class BallEntity {
         FixtureDef fixtureDef = new FixtureDef();
         fixtureDef.shape = shape;
         fixtureDef.restitution = 0.8f;
-        fixtureDef.density = 0.5f;
+        fixtureDef.density = 0.7f;
         fixtureDef.friction = 0.2f;
 
         Fixture ballFixture = body.createFixture(fixtureDef);
