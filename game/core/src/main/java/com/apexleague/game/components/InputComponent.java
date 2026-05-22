@@ -8,5 +8,5 @@ public class InputComponent implements Component {
     public boolean jump;
     public boolean drift;
     public boolean boost;
+    public int playerId = 1;
 }
-

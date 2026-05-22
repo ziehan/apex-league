@@ -1,7 +1,10 @@
 package com.apexleague.game.entities;
 
 import com.apexleague.game.components.PhysicsComponent;
+import com.apexleague.game.components.TextureComponent;
 import com.badlogic.ashley.core.Entity;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
@@ -39,7 +42,15 @@ public final class BallEntity {
         shape.dispose();
 
         Entity ball = new Entity();
+        TextureComponent textureComponent = new TextureComponent();
+        textureComponent.region = new TextureRegion(new Texture("images/ball.png"));
+        float diameter = BALL_RADIUS * 2f;
+        textureComponent.scale.set(
+            diameter / textureComponent.region.getRegionWidth(),
+            diameter / textureComponent.region.getRegionHeight()
+        );
         ball.add(new PhysicsComponent(body));
+        ball.add(textureComponent);
         return ball;
     }
 }
