@@ -1,8 +1,7 @@
 package com.apexleague.game.managers;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef;
@@ -16,6 +15,10 @@ import java.util.List;
 
 public class BoostManager {
     private final List<BoostPad> boostPads = new ArrayList<>();
+    private final Texture bigPadTex = new Texture("images/big_boost_pad.png");
+    private final Texture bigBoostTex = new Texture("images/big_boost.png");
+    private final Texture smallPadTex = new Texture("images/small_boost_pad.png");
+    private final Texture smallBoostTex = new Texture("images/small_boost.png");
 
     public static final class BoostPad {
         private final Vector2 position;
@@ -106,20 +109,28 @@ public class BoostManager {
         }
     }
 
-    public void renderPads(ShapeRenderer renderer, Matrix4 projectionMatrix) {
-        renderer.setProjectionMatrix(projectionMatrix);
-        renderer.begin(ShapeRenderer.ShapeType.Line);
-        renderer.setColor(Color.YELLOW);
+    public void renderPads(SpriteBatch batch) {
         for (BoostPad pad : boostPads) {
+            Texture padTex = pad.isLarge() ? bigPadTex : smallPadTex;
+            Texture boostTex = pad.isLarge() ? bigBoostTex : smallBoostTex;
+            float size = pad.getRadius() * 2f;
+            float x = pad.getPosition().x - pad.getRadius();
+            float y = pad.getPosition().y - pad.getRadius();
+            batch.draw(padTex, x, y, size, size);
             if (pad.isActive()) {
-                renderer.circle(pad.getPosition().x, pad.getPosition().y, pad.getRadius(), 24);
+                batch.draw(boostTex, x, y, size, size);
             }
         }
-        renderer.end();
+    }
+
+    public void dispose() {
+        bigPadTex.dispose();
+        bigBoostTex.dispose();
+        smallPadTex.dispose();
+        smallBoostTex.dispose();
     }
 
     public List<BoostPad> getBoostPads() {
         return Collections.unmodifiableList(boostPads);
     }
 }
-

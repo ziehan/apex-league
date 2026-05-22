@@ -15,10 +15,12 @@ import com.apexleague.game.ui.HUD;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -53,14 +55,18 @@ public class PlayScreen extends ScreenAdapter {
     private final Box2DDebugRenderer b2dr;
     private final HUD hud;
     private final GameManager gameManager;
-    private final List<Body> playerBodies = new ArrayList<>();
-    private final ShapeRenderer padRenderer;
+    private final List<PhysicsComponent> playerPhysicsList = new ArrayList<>();
     private final SpriteRenderSystem spriteRenderSystem;
     private final BoostManager boostManager;
+    private final Texture pitchTex;
+    private final Texture redCarTex;
+    private final Texture blueCarTex;
     private Body ballBody;
-    private PhysicsComponent playerPhysics;
+    private PhysicsComponent leftPlayerPhysics;
+    private PhysicsComponent rightPlayerPhysics;
     private float shakeTimer = 0f;
     private float shakeIntensity = 0f;
+    private boolean isDebug = false;
 
     public PlayScreen() {
         Box2D.init();
@@ -73,7 +79,9 @@ public class PlayScreen extends ScreenAdapter {
         b2dr = new Box2DDebugRenderer();
         hud = new HUD();
         gameManager = GameManager.getInstance();
-        padRenderer = new ShapeRenderer();
+        pitchTex = new Texture("images/football_pitch.png");
+        redCarTex = new Texture("images/red_car.png");
+        blueCarTex = new Texture("images/blue_car.png");
 
         spriteRenderSystem = new SpriteRenderSystem(batch);
         spriteRenderSystem.setProcessing(false);
@@ -89,11 +97,32 @@ public class PlayScreen extends ScreenAdapter {
         engine.addSystem(new MovementSystem());
         engine.addSystem(new JumpSystem());
 
-        Entity playerEntity = PlayerEntity.create(world, PLAYER_SPAWN_X, SPAWN_Y, PLAYER_JUMP_FORCE);
-        engine.addEntity(playerEntity);
-        playerPhysics = playerEntity.getComponent(PhysicsComponent.class);
-        if (playerPhysics != null) {
-            playerBodies.add(playerPhysics.body);
+        Entity leftPlayerEntity = PlayerEntity.create(
+            world,
+            WORLD_WIDTH * 0.25f,
+            SPAWN_Y,
+            PLAYER_JUMP_FORCE,
+            new TextureRegion(redCarTex),
+            1
+        );
+        engine.addEntity(leftPlayerEntity);
+        leftPlayerPhysics = leftPlayerEntity.getComponent(PhysicsComponent.class);
+        if (leftPlayerPhysics != null) {
+            playerPhysicsList.add(leftPlayerPhysics);
+        }
+
+        Entity rightPlayerEntity = PlayerEntity.create(
+            world,
+            WORLD_WIDTH * 0.75f,
+            SPAWN_Y,
+            PLAYER_JUMP_FORCE,
+            new TextureRegion(blueCarTex),
+            2
+        );
+        engine.addEntity(rightPlayerEntity);
+        rightPlayerPhysics = rightPlayerEntity.getComponent(PhysicsComponent.class);
+        if (rightPlayerPhysics != null) {
+            playerPhysicsList.add(rightPlayerPhysics);
         }
 
         Entity ballEntity = BallEntity.create(world, BALL_SPAWN_X, SPAWN_Y, BALL_LINEAR_DAMPING);
@@ -110,6 +139,10 @@ public class PlayScreen extends ScreenAdapter {
     @Override
     public void render(float delta) {
         ScreenUtils.clear(0.06f, 0.08f, 0.12f, 1f);
+
+        if (Gdx.input.isKeyJustPressed(Input.Keys.NUM_1)) {
+            isDebug = !isDebug;
+        }
 
         if (!gameManager.isGameOver) {
             if (!gameManager.isOvertime && !gameManager.isResetting && !gameManager.isKickoff) {
@@ -166,6 +199,7 @@ public class PlayScreen extends ScreenAdapter {
         if (!gameManager.isGameOver) {
             engine.update(delta);
             world.step(1f / 60f, 6, 2);
+            handlePendingDemolitions();
         }
 
         viewport.apply();
@@ -184,19 +218,27 @@ public class PlayScreen extends ScreenAdapter {
             camera.position.set(WORLD_WIDTH * 0.5f, WORLD_HEIGHT * 0.5f, 0f);
         }
         camera.update();
-        b2dr.render(world, camera.combined);
+        if (isDebug) {
+            b2dr.render(world, camera.combined);
+        }
 
         batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        batch.draw(pitchTex, 0f, 0f, WORLD_WIDTH, WORLD_HEIGHT);
+        batch.end();
+
         spriteRenderSystem.update(delta);
 
-        padRenderer.setProjectionMatrix(camera.combined);
-        boostManager.renderPads(padRenderer, camera.combined);
+        batch.setProjectionMatrix(camera.combined);
+        batch.begin();
+        boostManager.renderPads(batch);
+        batch.end();
 
         if (hud != null) {
             hud.update(gameManager.leftScore, gameManager.rightScore);
-            if (playerPhysics != null) {
-                hud.updateBoost(MathUtils.round(playerPhysics.boostAmount));
-            }
+            int leftBoost = leftPlayerPhysics != null ? MathUtils.round(leftPlayerPhysics.boostAmount) : 0;
+            int rightBoost = rightPlayerPhysics != null ? MathUtils.round(rightPlayerPhysics.boostAmount) : 0;
+            hud.updateBoosts(leftBoost, rightBoost);
             hud.updateTimer(formatTimer(gameManager.matchTimer, gameManager.isOvertime));
             hud.drawBoostIndicator();
             hud.stage.act(delta);
@@ -220,15 +262,24 @@ public class PlayScreen extends ScreenAdapter {
             ballBody.setAngularVelocity(0f);
         }
 
-        for (Body body : playerBodies) {
+        if (leftPlayerPhysics != null) {
+            Body body = leftPlayerPhysics.body;
             body.setActive(true);
-            float angle = 0f;
-            if (ballBody != null) {
-                angle = MathUtils.atan2(ballBody.getPosition().y - body.getPosition().y, ballBody.getPosition().x - body.getPosition().x);
-            }
-            body.setTransform(PLAYER_SPAWN_X, SPAWN_Y, angle);
+            body.setTransform(WORLD_WIDTH * 0.25f, SPAWN_Y, -MathUtils.PI / 2f);
             body.setLinearVelocity(0f, 0f);
             body.setAngularVelocity(0f);
+            leftPlayerPhysics.boostAmount = 33f;
+            leftPlayerPhysics.pendingDemolition = false;
+        }
+
+        if (rightPlayerPhysics != null) {
+            Body body = rightPlayerPhysics.body;
+            body.setActive(true);
+            body.setTransform(WORLD_WIDTH * 0.75f, SPAWN_Y, MathUtils.PI / 2f);
+            body.setLinearVelocity(0f, 0f);
+            body.setAngularVelocity(0f);
+            rightPlayerPhysics.boostAmount = 33f;
+            rightPlayerPhysics.pendingDemolition = false;
         }
 
         gameManager.isResetting = false;
@@ -238,12 +289,32 @@ public class PlayScreen extends ScreenAdapter {
         }
     }
 
+    private void handlePendingDemolitions() {
+        for (PhysicsComponent physics : playerPhysicsList) {
+            if (physics == null || !physics.pendingDemolition) {
+                continue;
+            }
+
+            Body body = physics.body;
+            body.setTransform(-100f, -100f, 0f);
+            body.setLinearVelocity(0f, 0f);
+            body.setAngularVelocity(0f);
+            physics.pendingDemolition = false;
+            if (!gameManager.isResetting) {
+                gameManager.startReset();
+            }
+        }
+    }
+
     @Override
     public void dispose() {
         b2dr.dispose();
         world.dispose();
         batch.dispose();
-        padRenderer.dispose();
+        boostManager.dispose();
+        pitchTex.dispose();
+        redCarTex.dispose();
+        blueCarTex.dispose();
         if (hud != null) {
             hud.dispose();
         }

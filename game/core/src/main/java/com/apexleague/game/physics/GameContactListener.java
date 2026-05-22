@@ -100,17 +100,9 @@ public class GameContactListener implements ContactListener {
         }
 
         if (physA.isSupersonic && !physB.isSupersonic) {
-            bodyB.setLinearVelocity(0f, 0f);
-            bodyB.setAngularVelocity(0f);
-            bodyB.setActive(false);
-            playScreen.triggerShake(0.5f, 0.5f);
-            gameManager.startReset();
+            physB.pendingDemolition = true;
         } else if (physB.isSupersonic && !physA.isSupersonic) {
-            bodyA.setLinearVelocity(0f, 0f);
-            bodyA.setAngularVelocity(0f);
-            bodyA.setActive(false);
-            playScreen.triggerShake(0.5f, 0.5f);
-            gameManager.startReset();
+            physA.pendingDemolition = true;
         }
     }
 
@@ -161,4 +153,3 @@ public class GameContactListener implements ContactListener {
     public void postSolve(Contact contact, ContactImpulse impulse) {
     }
 }
-

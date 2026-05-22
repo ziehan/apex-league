@@ -12,10 +12,12 @@ public class HUD {
     public final Stage stage;
     private final Label scoreLabel;
     private final Label centerLabel;
-    private final Label boostLabel;
+    private final Label leftBoostLabel;
+    private final Label rightBoostLabel;
     private final Label timerLabel;
     private final com.badlogic.gdx.graphics.glutils.ShapeRenderer shapeRenderer;
-    private int boostValue = 0;
+    private int leftBoostValue = 0;
+    private int rightBoostValue = 0;
 
     public HUD() {
         stage = new Stage(new ScreenViewport());
@@ -30,7 +32,8 @@ public class HUD {
         Label.LabelStyle centerStyle = new Label.LabelStyle(centerFont, Color.WHITE);
         centerLabel = new Label("", centerStyle);
 
-        boostLabel = new Label("100", style);
+        leftBoostLabel = new Label("100", style);
+        rightBoostLabel = new Label("100", style);
         shapeRenderer = new com.badlogic.gdx.graphics.glutils.ShapeRenderer();
 
         Table topTable = new Table();
@@ -43,11 +46,17 @@ public class HUD {
         topTable.add(centerLabel).padTop(6f);
         stage.addActor(topTable);
 
-        Table boostTable = new Table();
-        boostTable.setFillParent(true);
-        boostTable.bottom().right();
-        boostTable.add(boostLabel).padRight(16f).padBottom(12f);
-        stage.addActor(boostTable);
+        Table leftBoostTable = new Table();
+        leftBoostTable.setFillParent(true);
+        leftBoostTable.bottom().left();
+        leftBoostTable.add(leftBoostLabel).padLeft(16f).padBottom(12f);
+        stage.addActor(leftBoostTable);
+
+        Table rightBoostTable = new Table();
+        rightBoostTable.setFillParent(true);
+        rightBoostTable.bottom().right();
+        rightBoostTable.add(rightBoostLabel).padRight(16f).padBottom(12f);
+        stage.addActor(rightBoostTable);
     }
 
     public void update(int leftScore, int rightScore) {
@@ -62,24 +71,32 @@ public class HUD {
         centerLabel.setText(text == null ? "" : text);
     }
 
-    public void updateBoost(int boostValue) {
-        this.boostValue = boostValue;
-        boostLabel.setText(String.valueOf(boostValue));
+    public void updateBoosts(int leftBoost, int rightBoost) {
+        leftBoostValue = leftBoost;
+        rightBoostValue = rightBoost;
+        leftBoostLabel.setText(String.valueOf(leftBoost));
+        rightBoostLabel.setText(String.valueOf(rightBoost));
     }
 
     public void drawBoostIndicator() {
         float width = stage.getViewport().getWorldWidth();
-        float height = stage.getViewport().getWorldHeight();
-        float centerX = width - 60f;
         float centerY = 40f;
         float radius = 26f;
 
-        float t = MathUtils.clamp(boostValue / 100f, 0f, 1f);
-        Color color = new Color(1f, 0.2f + 0.8f * t, 0f, 1f);
+        float leftX = 60f;
+        float rightX = width - 60f;
+
+        float leftT = MathUtils.clamp(leftBoostValue / 100f, 0f, 1f);
+        float rightT = MathUtils.clamp(rightBoostValue / 100f, 0f, 1f);
+        Color leftColor = new Color(1f, 0.2f + 0.8f * leftT, 0f, 1f);
+        Color rightColor = new Color(1f, 0.2f + 0.8f * rightT, 0f, 1f);
+
         shapeRenderer.setProjectionMatrix(stage.getViewport().getCamera().combined);
         shapeRenderer.begin(com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(color);
-        shapeRenderer.circle(centerX, centerY, radius, 32);
+        shapeRenderer.setColor(leftColor);
+        shapeRenderer.circle(leftX, centerY, radius, 32);
+        shapeRenderer.setColor(rightColor);
+        shapeRenderer.circle(rightX, centerY, radius, 32);
         shapeRenderer.end();
     }
 
