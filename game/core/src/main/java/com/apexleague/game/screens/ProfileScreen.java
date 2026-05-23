@@ -1,10 +1,11 @@
 package com.apexleague.game.screens;
 
 import com.apexleague.game.Main;
-import com.apexleague.game.state.GameManager;
 import com.apexleague.game.ui.MenuFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -12,78 +13,67 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 
-public class MainMenuScreen implements Screen {
+public class ProfileScreen implements Screen {
     private final Main game;
     private final Stage stage;
     private final com.badlogic.gdx.scenes.scene2d.ui.Skin skin;
-    private final Label statsLabel;
     private final Texture pitchTex;
 
-    private final Table mainTable;
-
-    public MainMenuScreen(Main game) {
+    public ProfileScreen(Main game) {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         skin = MenuFactory.createDefaultSkin();
         pitchTex = new Texture("images/football_pitch.png");
 
-        Label title = new Label("APEX LEAGUE", skin);
-        TextButton playButton = new TextButton("PLAY", skin);
-        TextButton garageButton = new TextButton("GARAGE", skin);
-        TextButton profileButton = new TextButton("PROFILE", skin);
-        TextButton quitButton = new TextButton("QUIT", skin);
-        statsLabel = new Label("", skin);
+        Label header = new Label("PROFILE", skin);
+        header.setColor(Color.GOLD);
+        header.setFontScale(1.5f);
 
-        mainTable = new Table();
-        mainTable.setFillParent(true);
-        mainTable.center();
-        mainTable.add(title).padBottom(24f).row();
-        mainTable.add(playButton).width(320f).height(56f).padBottom(12f).row();
-        mainTable.add(garageButton).width(320f).height(56f).padBottom(12f).row();
-        mainTable.add(profileButton).width(320f).height(56f).padBottom(12f).row();
-        mainTable.add(quitButton).width(320f).height(56f);
-        stage.addActor(mainTable);
+        TextButton careerButton = new TextButton("CAREER", skin);
+        TextButton matchHistoryButton = new TextButton("MATCH HISTORY", skin);
+        TextButton leaderboardButton = new TextButton("LEADERBOARD", skin);
+        TextButton backButton = new TextButton("BACK", skin);
 
-        Table statsTable = new Table();
-        statsTable.setFillParent(true);
-        statsTable.top().left();
-        statsTable.add(statsLabel).padLeft(12f).padTop(12f);
-        stage.addActor(statsTable);
+        Table root = new Table();
+        root.setFillParent(true);
+        root.center();
+        root.setBackground(MenuFactory.createPanelDrawable(skin, new Color(0f, 0f, 0f, 0.8f)));
+        root.pad(30f);
+        root.add(header).padBottom(24f).row();
+        root.add(careerButton).width(320f).height(56f).padBottom(12f).row();
+        root.add(matchHistoryButton).width(320f).height(56f).padBottom(12f).row();
+        root.add(leaderboardButton).width(320f).height(56f).padBottom(12f).row();
+        root.add(backButton).width(320f).height(56f).row();
+        stage.addActor(root);
 
-        playButton.addListener(new ChangeListener() {
+        careerButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                GameManager.getInstance().resetStats();
-                GameManager.getInstance().resetMatchRecordFlag();
-                game.setScreen(new PlayScreen(game));
+                game.setScreen(new CareerScreen(game));
             }
         });
 
-        garageButton.addListener(new ChangeListener() {
+        matchHistoryButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new GarageScreen(game));
+                game.setScreen(new MatchHistoryScreen(game));
             }
         });
 
-        profileButton.addListener(new ChangeListener() {
+        leaderboardButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new ProfileScreen(game));
+                game.setScreen(new LeaderboardScreen(game));
             }
         });
 
-        quitButton.addListener(new ChangeListener() {
+        backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                Gdx.app.exit();
+                game.setScreen(new MainMenuScreen(game));
             }
         });
-
-        // Profile navigation now handled by ProfileScreen.
     }
 
     @Override
@@ -101,11 +91,9 @@ public class MainMenuScreen implements Screen {
         game.batch.draw(pitchTex, 0f, 0f, stage.getViewport().getWorldWidth(), stage.getViewport().getWorldHeight());
         game.batch.end();
         game.batch.setColor(Color.WHITE);
-        GameManager gm = GameManager.getInstance();
         stage.act(delta);
         stage.draw();
     }
-
 
     @Override
     public void resize(int width, int height) {
@@ -132,3 +120,4 @@ public class MainMenuScreen implements Screen {
         pitchTex.dispose();
     }
 }
+

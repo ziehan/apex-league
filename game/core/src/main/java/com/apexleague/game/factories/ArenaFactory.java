@@ -120,11 +120,11 @@ public final class ArenaFactory {
         fdef.shape = shape;
         fdef.isSensor = true;
 
-        bdef.position.set(-GOAL_DEPTH, WORLD_HEIGHT * 0.5f);
+        bdef.position.set(-3.0f, WORLD_HEIGHT * 0.5f);
         Body leftGoal = world.createBody(bdef);
         leftGoal.createFixture(fdef).setUserData("GOAL_LEFT");
 
-        bdef.position.set(WORLD_WIDTH + GOAL_DEPTH, WORLD_HEIGHT * 0.5f);
+        bdef.position.set(WORLD_WIDTH + 3.0f, WORLD_HEIGHT * 0.5f);
         Body rightGoal = world.createBody(bdef);
         rightGoal.createFixture(fdef).setUserData("GOAL_RIGHT");
 

@@ -85,7 +85,7 @@ public class MovementSystem extends IteratingSystem {
 
         float signedForwardSpeed = getForwardVelocity(body).dot(body.getWorldVector(forwardAxis));
         float absForwardSpeed = Math.abs(signedForwardSpeed);
-        boolean shouldBeSupersonic = !inputLocked && thrustInput > 0f && body.getLinearVelocity().len() >= SUPERSONIC_THRESHOLD;
+        boolean shouldBeSupersonic = !inputLocked && boostActive && thrustInput != 0f && body.getLinearVelocity().len() >= SUPERSONIC_THRESHOLD;
         boolean wasSupersonic = physicsComponent.isSupersonic;
         if (!wasSupersonic && shouldBeSupersonic) {
             System.out.println("SUPERSONIC ACTIVE!");
