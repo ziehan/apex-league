@@ -1,5 +1,6 @@
 package com.apexleague.game.screens;
 
+import com.apexleague.game.Main;
 import com.apexleague.game.components.PhysicsComponent;
 import com.apexleague.game.entities.BallEntity;
 import com.apexleague.game.entities.PlayerEntity;
@@ -17,10 +18,12 @@ import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.ScreenAdapter;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
@@ -68,7 +71,11 @@ public class PlayScreen extends ScreenAdapter {
     private float shakeIntensity = 0f;
     private boolean isDebug = false;
 
-    public PlayScreen() {
+    private final Main game;
+    private final GlyphLayout layout = new GlyphLayout();
+
+    public PlayScreen(Main game) {
+        this.game = game;
         Box2D.init();
         camera = new OrthographicCamera();
         viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
@@ -144,62 +151,68 @@ public class PlayScreen extends ScreenAdapter {
             isDebug = !isDebug;
         }
 
-        if (!gameManager.isGameOver) {
-            if (!gameManager.isOvertime && !gameManager.isResetting && !gameManager.isKickoff) {
-                gameManager.matchTimer -= delta;
-                if (gameManager.matchTimer <= 0f) {
-                    gameManager.matchTimer = 0f;
-                    if (gameManager.leftScore == gameManager.rightScore) {
-                        gameManager.isOvertime = true;
-                        if (!gameManager.isResetting) {
-                            gameManager.startReset();
-                        }
-                    } else {
-                        gameManager.isGameOver = true;
-                        gameManager.winnerText = gameManager.leftScore > gameManager.rightScore ? "KIRI MENANG!" : "KANAN MENANG!";
-                        if (hud != null) {
-                            hud.setCenterText(gameManager.winnerText);
+        if (!gameManager.isGameOver && Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
+            gameManager.isPaused = !gameManager.isPaused;
+        }
+
+        if (!gameManager.isPaused) {
+            if (!gameManager.isGameOver) {
+                if (!gameManager.isOvertime && !gameManager.isResetting && !gameManager.isKickoff) {
+                    gameManager.matchTimer -= delta;
+                    if (gameManager.matchTimer <= 0f) {
+                        gameManager.matchTimer = 0f;
+                        if (gameManager.leftScore == gameManager.rightScore) {
+                            gameManager.isOvertime = true;
+                            if (!gameManager.isResetting) {
+                                gameManager.startReset();
+                            }
+                        } else {
+                            gameManager.isGameOver = true;
+                            gameManager.winnerText = gameManager.leftScore > gameManager.rightScore ? "KIRI MENANG!" : "KANAN MENANG!";
+                            if (hud != null) {
+                                hud.setCenterText(gameManager.winnerText);
+                            }
                         }
                     }
-                }
-            } else if (gameManager.isOvertime && !gameManager.isResetting && !gameManager.isKickoff) {
-                gameManager.matchTimer += delta;
-            }
-        }
-
-        if (gameManager.isResetting) {
-            gameManager.resetTimer -= delta;
-            if (gameManager.resetTimer <= 0f) {
-                resetArena();
-            }
-        }
-
-        if (gameManager.isKickoff) {
-            gameManager.kickoffTimer -= delta;
-            if (hud != null) {
-                if (gameManager.kickoffTimer > 2f) {
-                    hud.setCenterText("3");
-                } else if (gameManager.kickoffTimer > 1f) {
-                    hud.setCenterText("2");
-                } else if (gameManager.kickoffTimer > 0f) {
-                    hud.setCenterText("1");
-                } else if (gameManager.kickoffTimer > -1f) {
-                    hud.setCenterText("GO!");
-                } else {
-                    gameManager.isKickoff = false;
-                    hud.setCenterText("");
+                } else if (gameManager.isOvertime && !gameManager.isResetting && !gameManager.isKickoff) {
+                    gameManager.matchTimer += delta;
                 }
             }
-        } else if (!gameManager.isResetting && !gameManager.isGameOver && hud != null) {
-            hud.setCenterText("");
-        }
 
-        boostManager.update(delta);
+            if (gameManager.isResetting) {
+                gameManager.resetTimer -= delta;
+                if (gameManager.resetTimer <= 0f) {
+                    resetArena();
+                }
+            }
 
-        if (!gameManager.isGameOver) {
-            engine.update(delta);
-            world.step(1f / 60f, 6, 2);
-            handlePendingDemolitions();
+            if (gameManager.isKickoff) {
+                gameManager.kickoffTimer -= delta;
+                if (hud != null) {
+                    if (gameManager.kickoffTimer > 2f) {
+                        hud.setCenterText("3");
+                    } else if (gameManager.kickoffTimer > 1f) {
+                        hud.setCenterText("2");
+                    } else if (gameManager.kickoffTimer > 0f) {
+                        hud.setCenterText("1");
+                    } else if (gameManager.kickoffTimer > -1f) {
+                        hud.setCenterText("GO!");
+                    } else {
+                        gameManager.isKickoff = false;
+                        hud.setCenterText("");
+                    }
+                }
+            } else if (!gameManager.isResetting && !gameManager.isGameOver && hud != null) {
+                hud.setCenterText("");
+            }
+
+            boostManager.update(delta);
+
+            if (!gameManager.isGameOver) {
+                engine.update(delta);
+                world.step(1f / 60f, 6, 2);
+                handlePendingDemolitions();
+            }
         }
 
         viewport.apply();
@@ -225,13 +238,8 @@ public class PlayScreen extends ScreenAdapter {
         batch.setProjectionMatrix(camera.combined);
         batch.begin();
         batch.draw(pitchTex, 0f, 0f, WORLD_WIDTH, WORLD_HEIGHT);
-        batch.end();
-
-        spriteRenderSystem.update(delta);
-
-        batch.setProjectionMatrix(camera.combined);
-        batch.begin();
         boostManager.renderPads(batch);
+        spriteRenderSystem.update(delta);
         batch.end();
 
         if (hud != null) {
@@ -243,6 +251,87 @@ public class PlayScreen extends ScreenAdapter {
             hud.drawBoostIndicator();
             hud.stage.act(delta);
             hud.stage.draw();
+        }
+
+        if (gameManager.isPaused && !gameManager.isGameOver) {
+            game.batch.setProjectionMatrix(camera.combined);
+            game.batch.begin();
+            game.font.setColor(1f, 1f, 1f, 0.9f);
+            layout.setText(game.font, "PAUSED");
+            float pausedX = (WORLD_WIDTH - layout.width) * 0.5f;
+            float pausedY = WORLD_HEIGHT * 0.65f;
+            game.font.draw(game.batch, layout, pausedX, pausedY);
+
+            String resumeText = "Press ESC to Resume";
+            layout.setText(game.font, resumeText);
+            float resumeX = (WORLD_WIDTH - layout.width) * 0.5f;
+            float resumeY = WORLD_HEIGHT * 0.55f;
+            game.font.draw(game.batch, layout, resumeX, resumeY);
+
+            String restartText = "Press R to Restart";
+            layout.setText(game.font, restartText);
+            float restartX = (WORLD_WIDTH - layout.width) * 0.5f;
+            float restartY = WORLD_HEIGHT * 0.48f;
+            game.font.draw(game.batch, layout, restartX, restartY);
+
+            String menuText = "Press M to Main Menu";
+            layout.setText(game.font, menuText);
+            float menuX = (WORLD_WIDTH - layout.width) * 0.5f;
+            float menuY = WORLD_HEIGHT * 0.41f;
+            game.font.draw(game.batch, layout, menuX, menuY);
+            game.batch.end();
+            game.font.setColor(Color.WHITE);
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
+                gameManager.leftScore = 0;
+                gameManager.rightScore = 0;
+                gameManager.matchTimer = 300f;
+                gameManager.isOvertime = false;
+                gameManager.isGameOver = false;
+                gameManager.winnerText = "";
+                gameManager.isResetting = false;
+                gameManager.resetTimer = 0f;
+                gameManager.isPaused = false;
+                resetArena();
+            }
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
+                gameManager.isPaused = false;
+                game.setScreen(new MainMenuScreen(game));
+            }
+        }
+
+        if (gameManager.isGameOver) {
+            game.batch.setProjectionMatrix(camera.combined);
+            game.batch.begin();
+            game.font.setColor(1f, 1f, 1f, 0.8f);
+            String winner = gameManager.winnerText;
+            layout.setText(game.font, winner);
+            float winnerX = (WORLD_WIDTH - layout.width) * 0.5f;
+            float winnerY = WORLD_HEIGHT * 0.6f;
+            game.font.draw(game.batch, layout, winnerX, winnerY);
+
+            String prompt = "Press ENTER to Main Menu";
+            layout.setText(game.font, prompt);
+            float promptX = (WORLD_WIDTH - layout.width) * 0.5f;
+            float promptY = WORLD_HEIGHT * 0.5f;
+            game.font.draw(game.batch, layout, promptX, promptY);
+            game.batch.end();
+            game.font.setColor(Color.WHITE);
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                gameManager.leftScore = 0;
+                gameManager.rightScore = 0;
+                gameManager.matchTimer = 300f;
+                gameManager.isGameOver = false;
+                gameManager.isOvertime = false;
+                gameManager.winnerText = "";
+                gameManager.isResetting = false;
+                gameManager.resetTimer = 0f;
+                gameManager.isKickoff = true;
+                gameManager.kickoffTimer = 3f;
+                game.setScreen(new MainMenuScreen(game));
+            }
         }
     }
 
@@ -265,7 +354,7 @@ public class PlayScreen extends ScreenAdapter {
         if (leftPlayerPhysics != null) {
             Body body = leftPlayerPhysics.body;
             body.setActive(true);
-            body.setTransform(WORLD_WIDTH * 0.25f, SPAWN_Y, -MathUtils.PI / 2f);
+            body.setTransform(WORLD_WIDTH * 0.25f, WORLD_HEIGHT * 0.5f, -MathUtils.PI / 2f);
             body.setLinearVelocity(0f, 0f);
             body.setAngularVelocity(0f);
             leftPlayerPhysics.boostAmount = 33f;
@@ -275,7 +364,7 @@ public class PlayScreen extends ScreenAdapter {
         if (rightPlayerPhysics != null) {
             Body body = rightPlayerPhysics.body;
             body.setActive(true);
-            body.setTransform(WORLD_WIDTH * 0.75f, SPAWN_Y, MathUtils.PI / 2f);
+            body.setTransform(WORLD_WIDTH * 0.75f, WORLD_HEIGHT * 0.5f, MathUtils.PI / 2f);
             body.setLinearVelocity(0f, 0f);
             body.setAngularVelocity(0f);
             rightPlayerPhysics.boostAmount = 33f;
@@ -296,13 +385,14 @@ public class PlayScreen extends ScreenAdapter {
             }
 
             Body body = physics.body;
-            body.setTransform(-100f, -100f, 0f);
+            if (physics == leftPlayerPhysics) {
+                body.setTransform(WORLD_WIDTH * 0.15f, WORLD_HEIGHT * 0.5f, -MathUtils.PI / 2f);
+            } else if (physics == rightPlayerPhysics) {
+                body.setTransform(WORLD_WIDTH * 0.85f, WORLD_HEIGHT * 0.5f, MathUtils.PI / 2f);
+            }
             body.setLinearVelocity(0f, 0f);
             body.setAngularVelocity(0f);
             physics.pendingDemolition = false;
-            if (!gameManager.isResetting) {
-                gameManager.startReset();
-            }
         }
     }
 

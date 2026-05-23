@@ -114,17 +114,17 @@ public final class ArenaFactory {
         bdef.type = BodyDef.BodyType.StaticBody;
 
         PolygonShape shape = new PolygonShape();
-        shape.setAsBox(0.5f, GOAL_HALF_GAP);
+        shape.setAsBox(GOAL_DEPTH * 0.5f, GOAL_HALF_GAP);
 
         FixtureDef fdef = new FixtureDef();
         fdef.shape = shape;
         fdef.isSensor = true;
 
-        bdef.position.set(0f, WORLD_HEIGHT * 0.5f);
+        bdef.position.set(-GOAL_DEPTH * 0.5f, WORLD_HEIGHT * 0.5f);
         Body leftGoal = world.createBody(bdef);
         leftGoal.createFixture(fdef).setUserData("GOAL_LEFT");
 
-        bdef.position.set(WORLD_WIDTH, WORLD_HEIGHT * 0.5f);
+        bdef.position.set(WORLD_WIDTH + GOAL_DEPTH * 0.5f, WORLD_HEIGHT * 0.5f);
         Body rightGoal = world.createBody(bdef);
         rightGoal.createFixture(fdef).setUserData("GOAL_RIGHT");
 
@@ -154,4 +154,3 @@ public final class ArenaFactory {
         circle.dispose();
     }
 }
-

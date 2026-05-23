@@ -11,16 +11,16 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 
 public class MovementSystem extends IteratingSystem {
-    private static final float THRUST_FORCE = 70f;
+    private static final float THRUST_FORCE = 35f;
     private static final float BOOST_MULTIPLIER = 2f;
     private static final float FULL_GRIP = 0.98f;
     private static final float DRIFT_GRIP = 0.05f;
-    private static final float STEER_FULL_SPEED = 8f;
+    private static final float STEER_FULL_SPEED = 5f;
     private static final float MAX_TURN_RATE = 3.2f;
     private static final float TURN_RESPONSE = 8f;
     private static final float TORQUE_FORCE = 40f;
     private static final float MIN_STEER_SPEED = 0.5f;
-    private static final float SUPERSONIC_THRESHOLD = 20f;
+    private static final float SUPERSONIC_THRESHOLD = 10f;
     private static final float BOOST_DRAIN_PER_SEC = 30f;
     private static final float DRIFT_FORWARD_FORCE = 8f;
 
