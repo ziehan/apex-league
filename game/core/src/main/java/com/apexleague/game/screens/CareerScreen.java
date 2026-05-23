@@ -28,12 +28,12 @@ public class CareerScreen implements Screen {
     private final Texture tableBgTex;
     private final Drawable tableBgDrawable;
 
-    private final Label winRateLabel;
-    private final Label matchPlayedLabel;
-    private final Label totalGoalsLabel;
-    private final Label totalBackwardGoalsLabel;
-    private final Label totalSavesLabel;
-    private final Label totalDemosLabel;
+    private final Label p1WinsLabel;
+    private final Label p2WinsLabel;
+    private final Label p1GoalsLabel;
+    private final Label p2GoalsLabel;
+    private final Label p1SavesLabel;
+    private final Label p2SavesLabel;
 
     public CareerScreen(Main game) {
         this.game = game;
@@ -51,44 +51,44 @@ public class CareerScreen implements Screen {
         statsTable.setBackground(tableBgDrawable);
         statsTable.pad(30f);
 
+        Label.LabelStyle headerStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.LIGHT_GRAY);
         Label.LabelStyle labelStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.WHITE);
-        Label.LabelStyle highlightStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.CYAN);
+        Label.LabelStyle redStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.SCARLET);
+        Label.LabelStyle blueStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.CYAN);
 
-        // WIN RATE
-        statsTable.add(new Label("WIN RATE (%)", labelStyle)).padBottom(10f).align(Align.left);
-        winRateLabel = new Label("0", highlightStyle);
-        winRateLabel.setAlignment(Align.center);
-        statsTable.add(winRateLabel).padBottom(10f).align(Align.center).row();
+        Label headerStat = new Label("STAT", headerStyle);
+        Label headerRed = new Label("RED", headerStyle);
+        Label headerBlue = new Label("BLUE", headerStyle);
+        headerStat.setAlignment(Align.left);
+        headerRed.setAlignment(Align.center);
+        headerBlue.setAlignment(Align.center);
+        statsTable.add(headerStat).width(220f).padBottom(12f).align(Align.left);
+        statsTable.add(headerRed).width(120f).padBottom(12f).align(Align.center);
+        statsTable.add(headerBlue).width(120f).padBottom(12f).align(Align.center).row();
 
-        // MATCH PLAYED
-        statsTable.add(new Label("MATCH PLAYED", labelStyle)).padBottom(10f).align(Align.left);
-        matchPlayedLabel = new Label("0", highlightStyle);
-        matchPlayedLabel.setAlignment(Align.center);
-        statsTable.add(matchPlayedLabel).padBottom(10f).align(Align.center).row();
+        statsTable.add(new Label("WINS", labelStyle)).padBottom(10f).align(Align.left);
+        p1WinsLabel = new Label("0", redStyle);
+        p1WinsLabel.setAlignment(Align.center);
+        statsTable.add(p1WinsLabel).padBottom(10f).align(Align.center);
+        p2WinsLabel = new Label("0", blueStyle);
+        p2WinsLabel.setAlignment(Align.center);
+        statsTable.add(p2WinsLabel).padBottom(10f).align(Align.center).row();
 
-        // GOALS
         statsTable.add(new Label("GOALS", labelStyle)).padBottom(10f).align(Align.left);
-        totalGoalsLabel = new Label("0", highlightStyle);
-        totalGoalsLabel.setAlignment(Align.center);
-        statsTable.add(totalGoalsLabel).padBottom(10f).align(Align.center).row();
+        p1GoalsLabel = new Label("0", redStyle);
+        p1GoalsLabel.setAlignment(Align.center);
+        statsTable.add(p1GoalsLabel).padBottom(10f).align(Align.center);
+        p2GoalsLabel = new Label("0", blueStyle);
+        p2GoalsLabel.setAlignment(Align.center);
+        statsTable.add(p2GoalsLabel).padBottom(10f).align(Align.center).row();
 
-        // BACKWARD GOALS
-        statsTable.add(new Label("BACKWARD GOALS", labelStyle)).padBottom(10f).align(Align.left);
-        totalBackwardGoalsLabel = new Label("0", highlightStyle);
-        totalBackwardGoalsLabel.setAlignment(Align.center);
-        statsTable.add(totalBackwardGoalsLabel).padBottom(10f).align(Align.center).row();
-
-        // SAVES
         statsTable.add(new Label("SAVES", labelStyle)).padBottom(10f).align(Align.left);
-        totalSavesLabel = new Label("0", highlightStyle);
-        totalSavesLabel.setAlignment(Align.center);
-        statsTable.add(totalSavesLabel).padBottom(10f).align(Align.center).row();
-
-        // DEMOS
-        statsTable.add(new Label("DEMOS", labelStyle)).padBottom(10f).align(Align.left);
-        totalDemosLabel = new Label("0", highlightStyle);
-        totalDemosLabel.setAlignment(Align.center);
-        statsTable.add(totalDemosLabel).padBottom(10f).align(Align.center).row();
+        p1SavesLabel = new Label("0", redStyle);
+        p1SavesLabel.setAlignment(Align.center);
+        statsTable.add(p1SavesLabel).padBottom(10f).align(Align.center);
+        p2SavesLabel = new Label("0", blueStyle);
+        p2SavesLabel.setAlignment(Align.center);
+        statsTable.add(p2SavesLabel).padBottom(10f).align(Align.center).row();
 
         TextButton backButton = new TextButton("BACK", skin);
 
@@ -127,14 +127,12 @@ public class CareerScreen implements Screen {
         game.batch.setColor(Color.WHITE);
 
         GameManager gm = GameManager.getInstance();
-        matchPlayedLabel.setText(String.valueOf(gm.totalMatches));
-        totalGoalsLabel.setText(String.valueOf(gm.totalGoals));
-        totalBackwardGoalsLabel.setText(String.valueOf(gm.totalBackwardGoals));
-        totalSavesLabel.setText(String.valueOf(gm.totalSaves));
-        totalDemosLabel.setText(String.valueOf(gm.totalDemos));
-
-        float winRate = gm.totalMatches > 0 ? (float) (gm.totalP1Wins + gm.totalP2Wins) / gm.totalMatches * 100f : 0f;
-        winRateLabel.setText(String.format("%.1f", winRate));
+        p1WinsLabel.setText(String.valueOf(gm.totalP1Wins));
+        p2WinsLabel.setText(String.valueOf(gm.totalP2Wins));
+        p1GoalsLabel.setText(String.valueOf(gm.totalP1Goals));
+        p2GoalsLabel.setText(String.valueOf(gm.totalP2Goals));
+        p1SavesLabel.setText(String.valueOf(gm.p1Saves));
+        p2SavesLabel.setText(String.valueOf(gm.p2Saves));
 
         stage.act(delta);
         stage.draw();

@@ -49,32 +49,34 @@ public class LeaderboardScreen implements Screen {
         header.setColor(Color.GOLD);
         header.setFontScale(1.5f);
 
+        // Header Row
         Table headerRow = new Table();
         headerRow.setBackground(rowDarkDrawable);
         headerRow.pad(10f);
+        addGridCell(headerRow, "RANK", Color.LIGHT_GRAY, 80f);
+        addGridCell(headerRow, "TEAM", Color.LIGHT_GRAY, 160f);
+        addGridCell(headerRow, "WINS", Color.LIGHT_GRAY, 100f);
+        addGridCell(headerRow, "GOALS", Color.LIGHT_GRAY, 100f);
+        addGridCell(headerRow, "SAVES", Color.LIGHT_GRAY, 100f);
+        addGridCell(headerRow, "DEMOS", Color.LIGHT_GRAY, 100f);
 
-        Label.LabelStyle headerStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.LIGHT_GRAY);
-        addHeaderCell(headerRow, "RANK", headerStyle, 70f);
-        addHeaderCell(headerRow, "TEAM", headerStyle, 170f);
-        addHeaderCell(headerRow, "WINS", headerStyle, 90f);
-        addHeaderCell(headerRow, "GOALS", headerStyle, 90f);
-        addHeaderCell(headerRow, "SAVES", headerStyle, 90f);
-        addHeaderCell(headerRow, "DEMOS", headerStyle, 90f);
-
+        // Data Rows
         Table rowOne = buildTeamRow(true);
         Table rowTwo = buildTeamRow(false);
 
         TextButton backButton = new TextButton("BACK", skin);
 
+        // Main Container
         Table root = new Table();
         root.setFillParent(true);
         root.center();
         root.setBackground(tableBgDrawable);
-        root.pad(30f);
-        root.add(header).padBottom(18f).row();
-        root.add(headerRow).width(760f).height(44f).padBottom(10f).row();
-        root.add(rowOne).width(760f).height(56f).padBottom(8f).row();
-        root.add(rowTwo).width(760f).height(56f).padBottom(18f).row();
+        root.pad(40f); // Tambah padding agar lega
+
+        root.add(header).padBottom(20f).row();
+        root.add(headerRow).width(720f).height(44f).padBottom(5f).row();
+        root.add(rowOne).width(720f).height(56f).padBottom(5f).row();
+        root.add(rowTwo).width(720f).height(56f).padBottom(30f).row();
         root.add(backButton).width(220f).height(50f).left();
         stage.addActor(root);
 
@@ -89,7 +91,7 @@ public class LeaderboardScreen implements Screen {
     private Table buildTeamRow(boolean isTopRank) {
         GameManager gm = GameManager.getInstance();
         boolean redOnTop = gm.totalP1Wins > gm.totalP2Wins
-                || (gm.totalP1Wins == gm.totalP2Wins && gm.p1Goals >= gm.p2Goals);
+            || (gm.totalP1Wins == gm.totalP2Wins && gm.p1Goals >= gm.p2Goals);
 
         boolean isRedRow = isTopRank == redOnTop;
         String rankText = isTopRank ? "1" : "2";
@@ -103,31 +105,24 @@ public class LeaderboardScreen implements Screen {
 
         Table row = new Table();
         row.setBackground(isTopRank ? rowLightDrawable : rowDarkDrawable);
-        row.pad(12f);
+        row.pad(10f);
 
-        Label.LabelStyle teamStyle = new Label.LabelStyle(skin.getFont("default-font"), teamColor);
-        Label.LabelStyle statStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.WHITE);
-
-        addDataCell(row, rankText, statStyle, 70f, Align.center);
-        addDataCell(row, teamName, teamStyle, 170f, Align.left);
-        addDataCell(row, String.valueOf(wins), statStyle, 90f, Align.center);
-        addDataCell(row, String.valueOf(goals), statStyle, 90f, Align.center);
-        addDataCell(row, String.valueOf(saves), statStyle, 90f, Align.center);
-        addDataCell(row, String.valueOf(demos), statStyle, 90f, Align.center);
+        addGridCell(row, rankText, Color.WHITE, 80f);
+        addGridCell(row, teamName, teamColor, 160f);
+        addGridCell(row, String.valueOf(wins), Color.WHITE, 100f);
+        addGridCell(row, String.valueOf(goals), Color.WHITE, 100f);
+        addGridCell(row, String.valueOf(saves), Color.WHITE, 100f);
+        addGridCell(row, String.valueOf(demos), Color.WHITE, 100f);
 
         return row;
     }
 
-    private void addHeaderCell(Table row, String text, Label.LabelStyle style, float width) {
+    // Method tunggal penjamin kerapian grid
+    private void addGridCell(Table row, String text, Color color, float width) {
+        Label.LabelStyle style = new Label.LabelStyle(skin.getFont("default-font"), color);
         Label label = new Label(text, style);
-        label.setAlignment(Align.center);
-        row.add(label).width(width).center();
-    }
-
-    private void addDataCell(Table row, String text, Label.LabelStyle style, float width, int align) {
-        Label label = new Label(text, style);
-        label.setAlignment(align);
-        row.add(label).width(width);
+        label.setAlignment(Align.center); // Paksa teks ke tengah
+        row.add(label).width(width).center(); // Paksa kotak selnya selebar width
     }
 
     @Override
@@ -155,12 +150,10 @@ public class LeaderboardScreen implements Screen {
     }
 
     @Override
-    public void pause() {
-    }
+    public void pause() {}
 
     @Override
-    public void resume() {
-    }
+    public void resume() {}
 
     @Override
     public void hide() {
@@ -186,4 +179,3 @@ public class LeaderboardScreen implements Screen {
         return new TextureRegionDrawable(new TextureRegion(texture));
     }
 }
-

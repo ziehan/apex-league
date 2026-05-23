@@ -115,8 +115,9 @@ public class MatchHistoryScreen implements Screen {
         Label.LabelStyle dateStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.LIGHT_GRAY);
         Label.LabelStyle redStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.SCARLET);
         Label.LabelStyle blueStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.CYAN);
-        Label.LabelStyle winStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.GREEN);
-        Label.LabelStyle lossStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.SCARLET);
+        Label.LabelStyle redWinStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.SCARLET);
+        Label.LabelStyle blueWinStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.CYAN);
+        Label.LabelStyle drawStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.GOLD);
 
         for (int i = gm.matchHistory.size - 1; i >= 0; i--) {
             MatchRecord record = gm.matchHistory.get(i);
@@ -140,11 +141,11 @@ public class MatchHistoryScreen implements Screen {
             scoreTable.add(blueScore);
 
             boolean p1Win = record.p1Score > record.p2Score;
+            boolean p2Win = record.p2Score > record.p1Score;
             boolean isDraw = record.p1Score == record.p2Score;
 
-            String statusText = isDraw ? "DRAW" : (p1Win ? "WIN" : "LOSS");
-            Color statusColor = isDraw ? Color.YELLOW : (p1Win ? winStyle.fontColor : lossStyle.fontColor);
-            Label.LabelStyle currentStatusStyle = new Label.LabelStyle(skin.getFont("default-font"), statusColor);
+            String statusText = isDraw ? "DRAW" : (p1Win ? "RED WIN" : "BLUE WIN");
+            Label.LabelStyle currentStatusStyle = isDraw ? drawStyle : (p1Win ? redWinStyle : blueWinStyle);
 
             Label statusLabel = new Label(statusText, currentStatusStyle);
             statusLabel.setAlignment(Align.center);
