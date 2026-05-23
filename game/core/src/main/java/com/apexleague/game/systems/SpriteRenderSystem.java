@@ -12,9 +12,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.physics.box2d.Body;
 
 public class SpriteRenderSystem extends IteratingSystem {
-    private final SpriteBatch batch;
     private final ComponentMapper<PhysicsComponent> physicsMapper = ComponentMapper.getFor(PhysicsComponent.class);
     private final ComponentMapper<TextureComponent> textureMapper = ComponentMapper.getFor(TextureComponent.class);
+    private final SpriteBatch batch;
 
     public SpriteRenderSystem(SpriteBatch batch) {
         super(Family.all(PhysicsComponent.class, TextureComponent.class).get());
@@ -28,9 +28,7 @@ public class SpriteRenderSystem extends IteratingSystem {
 
     @Override
     public void update(float deltaTime) {
-        batch.begin();
         super.update(deltaTime);
-        batch.end();
     }
 
     @Override

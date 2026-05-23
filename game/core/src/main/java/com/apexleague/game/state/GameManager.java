@@ -13,6 +13,7 @@ public final class GameManager {
     public boolean isOvertime = false;
     public boolean isGameOver = false;
     public String winnerText = "";
+    public boolean isPaused = false;
 
     private GameManager() {
     }
