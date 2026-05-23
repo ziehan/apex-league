@@ -14,6 +14,12 @@ public final class GameManager {
     public boolean isGameOver = false;
     public String winnerText = "";
     public boolean isPaused = false;
+    public int p1Goals = 0;
+    public int p1Saves = 0;
+    public int p1Demos = 0;
+    public int p2Goals = 0;
+    public int p2Saves = 0;
+    public int p2Demos = 0;
 
     private GameManager() {
     }
@@ -40,5 +46,14 @@ public final class GameManager {
     public void startKickoff() {
         isKickoff = true;
         kickoffTimer = 3f;
+    }
+
+    public void resetStats() {
+        p1Goals = 0;
+        p1Saves = 0;
+        p1Demos = 0;
+        p2Goals = 0;
+        p2Saves = 0;
+        p2Demos = 0;
     }
 }

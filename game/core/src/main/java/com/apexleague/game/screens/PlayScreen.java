@@ -13,6 +13,7 @@ import com.apexleague.game.systems.JumpSystem;
 import com.apexleague.game.systems.MovementSystem;
 import com.apexleague.game.systems.SpriteRenderSystem;
 import com.apexleague.game.ui.HUD;
+import com.apexleague.game.ui.MenuFactory;
 import com.badlogic.ashley.core.Engine;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.gdx.Gdx;
@@ -23,12 +24,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.*;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 
 import java.util.ArrayList;
@@ -72,7 +78,8 @@ public class PlayScreen extends ScreenAdapter {
     private boolean isDebug = false;
 
     private final Main game;
-    private final GlyphLayout layout = new GlyphLayout();
+    private final Stage pauseStage;
+    private final com.badlogic.gdx.scenes.scene2d.ui.Skin pauseSkin;
 
     public PlayScreen(Main game) {
         this.game = game;
@@ -89,6 +96,10 @@ public class PlayScreen extends ScreenAdapter {
         pitchTex = new Texture("images/football_pitch.png");
         redCarTex = new Texture("images/red_car.png");
         blueCarTex = new Texture("images/blue_car.png");
+
+        pauseStage = new Stage(new ScreenViewport());
+        pauseSkin = MenuFactory.createDefaultSkin();
+        buildPauseMenu();
 
         spriteRenderSystem = new SpriteRenderSystem(batch);
         spriteRenderSystem.setProcessing(false);
@@ -153,6 +164,18 @@ public class PlayScreen extends ScreenAdapter {
 
         if (!gameManager.isGameOver && Gdx.input.isKeyJustPressed(Input.Keys.ESCAPE)) {
             gameManager.isPaused = !gameManager.isPaused;
+            if (gameManager.isPaused) {
+                Gdx.input.setInputProcessor(pauseStage);
+            } else {
+                Gdx.input.setInputProcessor(null);
+            }
+        }
+
+        if (gameManager.isGameOver) {
+            gameManager.isPaused = false;
+            Gdx.input.setInputProcessor(null);
+            game.setScreen(new GameOverScreen(game));
+            return;
         }
 
         if (!gameManager.isPaused) {
@@ -254,84 +277,9 @@ public class PlayScreen extends ScreenAdapter {
         }
 
         if (gameManager.isPaused && !gameManager.isGameOver) {
-            game.batch.setProjectionMatrix(camera.combined);
-            game.batch.begin();
-            game.font.setColor(1f, 1f, 1f, 0.9f);
-            layout.setText(game.font, "PAUSED");
-            float pausedX = (WORLD_WIDTH - layout.width) * 0.5f;
-            float pausedY = WORLD_HEIGHT * 0.65f;
-            game.font.draw(game.batch, layout, pausedX, pausedY);
-
-            String resumeText = "Press ESC to Resume";
-            layout.setText(game.font, resumeText);
-            float resumeX = (WORLD_WIDTH - layout.width) * 0.5f;
-            float resumeY = WORLD_HEIGHT * 0.55f;
-            game.font.draw(game.batch, layout, resumeX, resumeY);
-
-            String restartText = "Press R to Restart";
-            layout.setText(game.font, restartText);
-            float restartX = (WORLD_WIDTH - layout.width) * 0.5f;
-            float restartY = WORLD_HEIGHT * 0.48f;
-            game.font.draw(game.batch, layout, restartX, restartY);
-
-            String menuText = "Press M to Main Menu";
-            layout.setText(game.font, menuText);
-            float menuX = (WORLD_WIDTH - layout.width) * 0.5f;
-            float menuY = WORLD_HEIGHT * 0.41f;
-            game.font.draw(game.batch, layout, menuX, menuY);
-            game.batch.end();
-            game.font.setColor(Color.WHITE);
-
-            if (Gdx.input.isKeyJustPressed(Input.Keys.R)) {
-                gameManager.leftScore = 0;
-                gameManager.rightScore = 0;
-                gameManager.matchTimer = 300f;
-                gameManager.isOvertime = false;
-                gameManager.isGameOver = false;
-                gameManager.winnerText = "";
-                gameManager.isResetting = false;
-                gameManager.resetTimer = 0f;
-                gameManager.isPaused = false;
-                resetArena();
-            }
-
-            if (Gdx.input.isKeyJustPressed(Input.Keys.M)) {
-                gameManager.isPaused = false;
-                game.setScreen(new MainMenuScreen(game));
-            }
-        }
-
-        if (gameManager.isGameOver) {
-            game.batch.setProjectionMatrix(camera.combined);
-            game.batch.begin();
-            game.font.setColor(1f, 1f, 1f, 0.8f);
-            String winner = gameManager.winnerText;
-            layout.setText(game.font, winner);
-            float winnerX = (WORLD_WIDTH - layout.width) * 0.5f;
-            float winnerY = WORLD_HEIGHT * 0.6f;
-            game.font.draw(game.batch, layout, winnerX, winnerY);
-
-            String prompt = "Press ENTER to Main Menu";
-            layout.setText(game.font, prompt);
-            float promptX = (WORLD_WIDTH - layout.width) * 0.5f;
-            float promptY = WORLD_HEIGHT * 0.5f;
-            game.font.draw(game.batch, layout, promptX, promptY);
-            game.batch.end();
-            game.font.setColor(Color.WHITE);
-
-            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-                gameManager.leftScore = 0;
-                gameManager.rightScore = 0;
-                gameManager.matchTimer = 300f;
-                gameManager.isGameOver = false;
-                gameManager.isOvertime = false;
-                gameManager.winnerText = "";
-                gameManager.isResetting = false;
-                gameManager.resetTimer = 0f;
-                gameManager.isKickoff = true;
-                gameManager.kickoffTimer = 3f;
-                game.setScreen(new MainMenuScreen(game));
-            }
+            pauseStage.act(delta);
+            pauseStage.draw();
+            return;
         }
     }
 
@@ -396,6 +344,71 @@ public class PlayScreen extends ScreenAdapter {
         }
     }
 
+    private void buildPauseMenu() {
+        Label title = new Label("PAUSED", pauseSkin);
+        TextButton resumeButton = new TextButton("RESUME", pauseSkin);
+        TextButton restartButton = new TextButton("RESTART MATCH", pauseSkin);
+        TextButton menuButton = new TextButton("MAIN MENU", pauseSkin);
+
+        Table table = new Table();
+        table.setFillParent(true);
+        table.center();
+        table.setBackground(MenuFactory.createPanelDrawable(pauseSkin, new Color(0f, 0f, 0f, 0.6f)));
+        table.add(title).padBottom(20f).row();
+        table.add(resumeButton).width(320f).height(56f).padBottom(12f).row();
+        table.add(restartButton).width(320f).height(56f).padBottom(12f).row();
+        table.add(menuButton).width(320f).height(56f);
+        pauseStage.addActor(table);
+
+        resumeButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                gameManager.isPaused = false;
+                Gdx.input.setInputProcessor(null);
+            }
+        });
+
+        restartButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                gameManager.leftScore = 0;
+                gameManager.rightScore = 0;
+                gameManager.matchTimer = 300f;
+                gameManager.isOvertime = false;
+                gameManager.isGameOver = false;
+                gameManager.winnerText = "";
+                gameManager.isResetting = false;
+                gameManager.resetTimer = 0f;
+                gameManager.isPaused = false;
+                resetArena();
+                Gdx.input.setInputProcessor(null);
+            }
+        });
+
+        menuButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                gameManager.isPaused = false;
+                Gdx.input.setInputProcessor(null);
+                game.setScreen(new MainMenuScreen(game));
+            }
+        });
+    }
+
+    public float getWorldWidth() {
+        return WORLD_WIDTH;
+    }
+
+    public int resolvePlayerId(Body body) {
+        if (leftPlayerPhysics != null && leftPlayerPhysics.body == body) {
+            return 1;
+        }
+        if (rightPlayerPhysics != null && rightPlayerPhysics.body == body) {
+            return 2;
+        }
+        return 0;
+    }
+
     @Override
     public void dispose() {
         b2dr.dispose();
@@ -405,6 +418,8 @@ public class PlayScreen extends ScreenAdapter {
         pitchTex.dispose();
         redCarTex.dispose();
         blueCarTex.dispose();
+        pauseStage.dispose();
+        pauseSkin.dispose();
         if (hud != null) {
             hud.dispose();
         }
