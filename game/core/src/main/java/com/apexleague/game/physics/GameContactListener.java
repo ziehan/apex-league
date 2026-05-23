@@ -50,13 +50,13 @@ public class GameContactListener implements ContactListener {
         }
         if ((a.equals("BALL") && b.equals("GOAL_LEFT")) || (b.equals("BALL") && a.equals("GOAL_LEFT"))) {
             gameManager.p2Goals++;
+            gameManager.getCarStat(gameManager.p2CarType).goals++;
             trackBackwardGoal(2);
             gameManager.addScore(false);
             if (gameManager.isOvertime) {
                 gameManager.isGameOver = true;
                 gameManager.winnerText = "KANAN MENANG!";
-                gameManager.totalMatches++;
-                gameManager.totalP2Wins++;
+                gameManager.recordMatchEnd();
                 if (hud != null) {
                     hud.setCenterText(gameManager.winnerText);
                 }
@@ -69,13 +69,13 @@ public class GameContactListener implements ContactListener {
             gameManager.startReset();
         } else if ((a.equals("BALL") && b.equals("GOAL_RIGHT")) || (b.equals("BALL") && a.equals("GOAL_RIGHT"))) {
             gameManager.p1Goals++;
+            gameManager.getCarStat(gameManager.p1CarType).goals++;
             trackBackwardGoal(1);
             gameManager.addScore(true);
             if (gameManager.isOvertime) {
                 gameManager.isGameOver = true;
                 gameManager.winnerText = "KIRI MENANG!";
-                gameManager.totalMatches++;
-                gameManager.totalP1Wins++;
+                gameManager.recordMatchEnd();
                 if (hud != null) {
                     hud.setCenterText(gameManager.winnerText);
                 }
