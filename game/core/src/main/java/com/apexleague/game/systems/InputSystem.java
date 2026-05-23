@@ -95,11 +95,11 @@ public class InputSystem extends IteratingSystem {
                 JUMP_COMMAND.execute(input);
             }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.P)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.O)) {
                 DRIFT_COMMAND.execute(input);
             }
 
-            if (Gdx.input.isKeyPressed(Input.Keys.O)) {
+            if (Gdx.input.isKeyPressed(Input.Keys.SHIFT_RIGHT)) {
                 BOOST_COMMAND.execute(input);
             }
         }

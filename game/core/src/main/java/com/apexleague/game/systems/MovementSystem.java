@@ -20,7 +20,7 @@ public class MovementSystem extends IteratingSystem {
     private static final float TURN_RESPONSE = 8f;
     private static final float TORQUE_FORCE = 40f;
     private static final float MIN_STEER_SPEED = 0.5f;
-    private static final float SUPERSONIC_THRESHOLD = 10f;
+    private static final float SUPERSONIC_THRESHOLD = 8f;
     private static final float BOOST_DRAIN_PER_SEC = 30f;
     private static final float DRIFT_FORWARD_FORCE = 8f;
 
