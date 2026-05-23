@@ -9,6 +9,8 @@ public class PhysicsComponent implements Component {
     public float boostAmount = 33f;
     public float dashTimer = 0f;
     public boolean pendingDemolition = false;
+    public float respawnTimer = 0f;
+    public boolean isDead = false;
 
     public PhysicsComponent(Body body) {
         this.body = body;
@@ -16,5 +18,7 @@ public class PhysicsComponent implements Component {
         this.boostAmount = 33f;
         this.dashTimer = 0f;
         this.pendingDemolition = false;
+        this.respawnTimer = 0f;
+        this.isDead = false;
     }
 }

@@ -11,6 +11,7 @@ import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Manifold;
+import com.badlogic.gdx.math.Vector2;
 
 public class GameContactListener implements ContactListener {
     private final GameManager gameManager;
@@ -49,10 +50,13 @@ public class GameContactListener implements ContactListener {
         }
         if ((a.equals("BALL") && b.equals("GOAL_LEFT")) || (b.equals("BALL") && a.equals("GOAL_LEFT"))) {
             gameManager.p2Goals++;
+            trackBackwardGoal(2);
             gameManager.addScore(false);
             if (gameManager.isOvertime) {
                 gameManager.isGameOver = true;
                 gameManager.winnerText = "KANAN MENANG!";
+                gameManager.totalMatches++;
+                gameManager.totalP2Wins++;
                 if (hud != null) {
                     hud.setCenterText(gameManager.winnerText);
                 }
@@ -65,10 +69,13 @@ public class GameContactListener implements ContactListener {
             gameManager.startReset();
         } else if ((a.equals("BALL") && b.equals("GOAL_RIGHT")) || (b.equals("BALL") && a.equals("GOAL_RIGHT"))) {
             gameManager.p1Goals++;
+            trackBackwardGoal(1);
             gameManager.addScore(true);
             if (gameManager.isOvertime) {
                 gameManager.isGameOver = true;
                 gameManager.winnerText = "KIRI MENANG!";
+                gameManager.totalMatches++;
+                gameManager.totalP1Wins++;
                 if (hud != null) {
                     hud.setCenterText(gameManager.winnerText);
                 }
@@ -180,6 +187,18 @@ public class GameContactListener implements ContactListener {
             gameManager.p1Saves++;
         } else if (playerId == 2 && ballX > worldWidth * 0.75f) {
             gameManager.p2Saves++;
+        }
+    }
+
+    private void trackBackwardGoal(int scoringPlayerId) {
+        Body body = playScreen.getPlayerBodyById(scoringPlayerId);
+        if (body == null) {
+            return;
+        }
+        Vector2 forward = body.getWorldVector(new Vector2(0f, 1f));
+        Vector2 velocity = body.getLinearVelocity();
+        if (velocity.dot(forward) < 0f) {
+            gameManager.totalBackwardGoals++;
         }
     }
 

@@ -70,6 +70,7 @@ public class GameOverScreen implements Screen {
         menuButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                resetMatchState();
                 game.setScreen(new MainMenuScreen(game));
             }
         });

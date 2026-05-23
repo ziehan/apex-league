@@ -20,6 +20,10 @@ public final class GameManager {
     public int p2Goals = 0;
     public int p2Saves = 0;
     public int p2Demos = 0;
+    public int totalMatches = 0;
+    public int totalP1Wins = 0;
+    public int totalP2Wins = 0;
+    public int totalBackwardGoals = 0;
 
     private GameManager() {
     }

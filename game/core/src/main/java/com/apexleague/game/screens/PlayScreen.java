@@ -85,7 +85,7 @@ public class PlayScreen extends ScreenAdapter {
         this.game = game;
         Box2D.init();
         camera = new OrthographicCamera();
-        viewport = new FitViewport(WORLD_WIDTH, WORLD_HEIGHT, camera);
+        viewport = new FitViewport(WORLD_WIDTH + 10f, WORLD_HEIGHT, camera);
         viewport.update(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true);
         batch = new SpriteBatch();
         world = new World(Vector2.Zero, true);
@@ -191,7 +191,14 @@ public class PlayScreen extends ScreenAdapter {
                             }
                         } else {
                             gameManager.isGameOver = true;
-                            gameManager.winnerText = gameManager.leftScore > gameManager.rightScore ? "KIRI MENANG!" : "KANAN MENANG!";
+                            boolean leftWins = gameManager.leftScore > gameManager.rightScore;
+                            gameManager.winnerText = leftWins ? "KIRI MENANG!" : "KANAN MENANG!";
+                            gameManager.totalMatches++;
+                            if (leftWins) {
+                                gameManager.totalP1Wins++;
+                            } else {
+                                gameManager.totalP2Wins++;
+                            }
                             if (hud != null) {
                                 hud.setCenterText(gameManager.winnerText);
                             }
@@ -234,7 +241,7 @@ public class PlayScreen extends ScreenAdapter {
             if (!gameManager.isGameOver) {
                 engine.update(delta);
                 world.step(1f / 60f, 6, 2);
-                handlePendingDemolitions();
+                handlePendingDemolitions(delta);
             }
         }
 
@@ -307,6 +314,8 @@ public class PlayScreen extends ScreenAdapter {
             body.setAngularVelocity(0f);
             leftPlayerPhysics.boostAmount = 33f;
             leftPlayerPhysics.pendingDemolition = false;
+            leftPlayerPhysics.respawnTimer = 0f;
+            leftPlayerPhysics.isDead = false;
         }
 
         if (rightPlayerPhysics != null) {
@@ -317,6 +326,8 @@ public class PlayScreen extends ScreenAdapter {
             body.setAngularVelocity(0f);
             rightPlayerPhysics.boostAmount = 33f;
             rightPlayerPhysics.pendingDemolition = false;
+            rightPlayerPhysics.respawnTimer = 0f;
+            rightPlayerPhysics.isDead = false;
         }
 
         gameManager.isResetting = false;
@@ -326,22 +337,46 @@ public class PlayScreen extends ScreenAdapter {
         }
     }
 
-    private void handlePendingDemolitions() {
+    private void handlePendingDemolitions(float delta) {
         for (PhysicsComponent physics : playerPhysicsList) {
-            if (physics == null || !physics.pendingDemolition) {
+            if (physics == null) {
                 continue;
             }
 
-            Body body = physics.body;
-            if (physics == leftPlayerPhysics) {
-                body.setTransform(WORLD_WIDTH * 0.15f, WORLD_HEIGHT * 0.5f, -MathUtils.PI / 2f);
-            } else if (physics == rightPlayerPhysics) {
-                body.setTransform(WORLD_WIDTH * 0.85f, WORLD_HEIGHT * 0.5f, MathUtils.PI / 2f);
+            if (physics.pendingDemolition) {
+                physics.body.setTransform(-100f, -100f, 0f);
+                physics.body.setLinearVelocity(0f, 0f);
+                physics.body.setAngularVelocity(0f);
+                physics.respawnTimer = 2.0f;
+                physics.isDead = true;
+                physics.pendingDemolition = false;
             }
-            body.setLinearVelocity(0f, 0f);
-            body.setAngularVelocity(0f);
-            physics.pendingDemolition = false;
+
+            if (physics.isDead) {
+                physics.respawnTimer -= delta;
+                if (physics.respawnTimer <= 0f) {
+                    int playerId = resolvePlayerId(physics.body);
+                    float spawnX = playerId == 1 ? WORLD_WIDTH * 0.25f : WORLD_WIDTH * 0.75f;
+                    float spawnY = WORLD_HEIGHT * 0.5f;
+                    float angle = playerId == 1 ? -MathUtils.PI / 2f : MathUtils.PI / 2f;
+                    physics.body.setTransform(spawnX, spawnY, angle);
+                    physics.body.setLinearVelocity(0f, 0f);
+                    physics.body.setAngularVelocity(0f);
+                    physics.isDead = false;
+                    physics.respawnTimer = 0f;
+                }
+            }
         }
+    }
+
+    public Body getPlayerBodyById(int playerId) {
+        if (playerId == 1 && leftPlayerPhysics != null) {
+            return leftPlayerPhysics.body;
+        }
+        if (playerId == 2 && rightPlayerPhysics != null) {
+            return rightPlayerPhysics.body;
+        }
+        return null;
     }
 
     private void buildPauseMenu() {

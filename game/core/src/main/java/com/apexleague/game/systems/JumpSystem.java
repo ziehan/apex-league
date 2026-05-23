@@ -55,7 +55,7 @@ public class JumpSystem extends IteratingSystem {
 
         jumpDirection.set(dx, dy).nor();
         Vector2 currentVel = physics.body.getLinearVelocity();
-        physics.body.setLinearVelocity(currentVel.scl(0.3f).add(impulse.set(physics.body.getWorldVector(jumpDirection)).scl(17.5f)));
+        physics.body.setLinearVelocity(currentVel.scl(0.3f).add(impulse.set(physics.body.getWorldVector(jumpDirection)).scl(8.75f)));
         physics.dashTimer = 0.4f;
 
         jump.isJumping = true;
