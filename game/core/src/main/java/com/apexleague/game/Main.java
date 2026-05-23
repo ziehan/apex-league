@@ -1,6 +1,6 @@
 package com.apexleague.game;
 
-import com.apexleague.game.screens.MainMenuScreen;
+import com.apexleague.game.screens.TitleScreen;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -14,7 +14,7 @@ public class Main extends Game {
         batch = new SpriteBatch();
         font = new BitmapFont();
         font.getData().setScale(2f);
-        setScreen(new MainMenuScreen(this));
+        setScreen(new TitleScreen(this));
     }
 
     @Override

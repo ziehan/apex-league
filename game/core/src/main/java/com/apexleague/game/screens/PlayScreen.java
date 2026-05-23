@@ -68,8 +68,8 @@ public class PlayScreen extends ScreenAdapter {
     private final SpriteRenderSystem spriteRenderSystem;
     private final BoostManager boostManager;
     private final Texture pitchTex;
-    private final Texture redCarTex;
-    private final Texture blueCarTex;
+    private final Texture p1CarTex;
+    private final Texture p2CarTex;
     private Body ballBody;
     private PhysicsComponent leftPlayerPhysics;
     private PhysicsComponent rightPlayerPhysics;
@@ -93,9 +93,10 @@ public class PlayScreen extends ScreenAdapter {
         b2dr = new Box2DDebugRenderer();
         hud = new HUD();
         gameManager = GameManager.getInstance();
+        gameManager.resetMatchRecordFlag();
         pitchTex = new Texture("images/football_pitch.png");
-        redCarTex = new Texture("images/red_car.png");
-        blueCarTex = new Texture("images/blue_car.png");
+        p1CarTex = new Texture(resolveCarTexturePath(gameManager.p1CarType));
+        p2CarTex = new Texture(resolveCarTexturePath(gameManager.p2CarType));
 
         pauseStage = new Stage(new ScreenViewport());
         pauseSkin = MenuFactory.createDefaultSkin();
@@ -120,7 +121,7 @@ public class PlayScreen extends ScreenAdapter {
             WORLD_WIDTH * 0.25f,
             SPAWN_Y,
             PLAYER_JUMP_FORCE,
-            new TextureRegion(redCarTex),
+            new TextureRegion(p1CarTex),
             1
         );
         engine.addEntity(leftPlayerEntity);
@@ -134,7 +135,7 @@ public class PlayScreen extends ScreenAdapter {
             WORLD_WIDTH * 0.75f,
             SPAWN_Y,
             PLAYER_JUMP_FORCE,
-            new TextureRegion(blueCarTex),
+            new TextureRegion(p2CarTex),
             2
         );
         engine.addEntity(rightPlayerEntity);
@@ -193,12 +194,7 @@ public class PlayScreen extends ScreenAdapter {
                             gameManager.isGameOver = true;
                             boolean leftWins = gameManager.leftScore > gameManager.rightScore;
                             gameManager.winnerText = leftWins ? "KIRI MENANG!" : "KANAN MENANG!";
-                            gameManager.totalMatches++;
-                            if (leftWins) {
-                                gameManager.totalP1Wins++;
-                            } else {
-                                gameManager.totalP2Wins++;
-                            }
+                            gameManager.recordMatchEnd();
                             if (hud != null) {
                                 hud.setCenterText(gameManager.winnerText);
                             }
@@ -296,6 +292,26 @@ public class PlayScreen extends ScreenAdapter {
         int seconds = totalSeconds % 60;
         String formatted = String.format("%02d:%02d", minutes, seconds);
         return overtime ? "OT " + formatted : formatted;
+    }
+
+    private String resolveCarTexturePath(String carType) {
+        String safeType = carType == null || carType.isEmpty() ? "red_car" : carType;
+        String basePath = "images/" + safeType + ".png";
+        if (Gdx.files.internal(basePath).exists()) {
+            return basePath;
+        }
+
+        String dashedPath = "images/" + safeType.replace('_', '-') + ".png";
+        if (Gdx.files.internal(dashedPath).exists()) {
+            return dashedPath;
+        }
+
+        String spacedPath = "images/" + safeType.replace('_', ' ') + ".png";
+        if (Gdx.files.internal(spacedPath).exists()) {
+            return spacedPath;
+        }
+
+        return "images/red_car.png";
     }
 
     private void resetArena() {
@@ -451,8 +467,8 @@ public class PlayScreen extends ScreenAdapter {
         batch.dispose();
         boostManager.dispose();
         pitchTex.dispose();
-        redCarTex.dispose();
-        blueCarTex.dispose();
+        p1CarTex.dispose();
+        p2CarTex.dispose();
         pauseStage.dispose();
         pauseSkin.dispose();
         if (hud != null) {
