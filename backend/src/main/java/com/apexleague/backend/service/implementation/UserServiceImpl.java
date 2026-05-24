@@ -1,5 +1,6 @@
 package com.apexleague.backend.service.implementation;
 
+import com.apexleague.backend.dto.CarSelectionDto;
 import com.apexleague.backend.dto.UserRegistrationDto;
 import com.apexleague.backend.dto.UserResponseDto;
 import com.apexleague.backend.model.User;
@@ -12,6 +13,7 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -55,10 +57,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUserById(String userId) {
-        if (!userRepository.existsById(userId)) {
+        UUID parsedId = UUID.fromString(userId);
+        if (!userRepository.existsById(parsedId)) {
             throw new NoSuchElementException("User tidak ditemukan");
         }
-        userRepository.deleteById(userId);
+        userRepository.deleteById(parsedId);
     }
 
     @Override
@@ -70,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     private UserResponseDto mapToDto(User user) {
         UserResponseDto responseDto = new UserResponseDto();
-        responseDto.setId(user.getId());
+        responseDto.setId(user.getId().toString());
         responseDto.setUsername(user.getUsername());
         responseDto.setCreatedAt(user.getCreatedAt());
         responseDto.setTotalMatchPlayed(user.getTotalMatchPlayed());
@@ -103,5 +106,14 @@ public class UserServiceImpl implements UserService {
         return BigDecimal.valueOf(value)
                 .setScale(2, RoundingMode.HALF_UP)
                 .doubleValue();
+    }
+
+    @Override
+    public void updateUserCars(String username, CarSelectionDto dto) {
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User tidak ditemukan"));
+        user.setLastUsedP1Car(dto.getP1Car());
+        user.setLastUsedP2Car(dto.getP2Car());
+        userRepository.save(user);
     }
 }

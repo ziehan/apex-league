@@ -3,6 +3,7 @@ package com.apexleague.backend.model;
 import jakarta.persistence.*;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "match_history")
@@ -10,13 +11,17 @@ public class MatchHistory {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
-    @Column(name = "player1_id", nullable = false)
-    private String player1Id;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "player1_id", nullable = false)
+    private User player1;
+
+    @Column(name = "player1_name", nullable = false)
+    private String player1Name = "Player1";
 
     @Column(name = "player2_name", nullable = false)
-    private String player2Name;
+    private String player2Name = "Guest";
 
     @Column(name = "player1_score")
     private int player1Score = 0;
@@ -31,10 +36,12 @@ public class MatchHistory {
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
-    public String getPlayer1Id() { return player1Id; }
-    public void setPlayer1Id(String player1Id) { this.player1Id = player1Id; }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
+    public User getPlayer1() { return player1; }
+    public void setPlayer1(User player1) { this.player1 = player1; }
+    public String getPlayer1Name() { return player1Name; }
+    public void setPlayer1Name(String player1Name) { this.player1Name = player1Name; }
     public String getPlayer2Name() { return player2Name; }
     public void setPlayer2Name(String player2Name) { this.player2Name = player2Name; }
     public int getPlayer1Score() { return player1Score; }

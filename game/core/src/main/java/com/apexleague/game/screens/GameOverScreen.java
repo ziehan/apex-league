@@ -1,7 +1,7 @@
 package com.apexleague.game.screens;
 
 import com.apexleague.game.Main;
-import com.apexleague.game.state.GameManager;
+import com.apexleague.game.managers.GameManager;
 import com.apexleague.game.ui.MenuFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -62,8 +62,8 @@ public class GameOverScreen implements Screen {
         statsTable.add(createCenteredValueLabel(String.valueOf(gameManager.p1Demos))).padBottom(10f);
         statsTable.add(createCenteredValueLabel(String.valueOf(gameManager.p2Demos))).padBottom(10f);
 
-        TextButton rematchButton = new TextButton("REMATCH", skin);
-        TextButton menuButton = new TextButton("MAIN MENU", skin);
+        TextButton rematchButton = MenuFactory.createTextButton(skin, "REMATCH");
+        TextButton menuButton = MenuFactory.createTextButton(skin, "MAIN MENU");
 
         Table table = new Table();
         table.setFillParent(true);
@@ -79,7 +79,7 @@ public class GameOverScreen implements Screen {
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                 resetMatchState();
                 gameManager.resetStats();
-                game.setScreen(new PlayScreen(game));
+                game.goToPlay();
             }
         });
 
@@ -87,7 +87,7 @@ public class GameOverScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                 resetMatchState();
-                game.setScreen(new MainMenuScreen(game));
+                game.goToMainMenu();
             }
         });
     }

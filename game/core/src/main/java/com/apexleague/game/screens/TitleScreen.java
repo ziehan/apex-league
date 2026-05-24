@@ -68,7 +68,7 @@ public class TitleScreen implements Screen {
         stage.draw();
 
         if (Gdx.input.isKeyJustPressed(Input.Keys.ANY_KEY) || Gdx.input.justTouched()) {
-            game.setScreen(new LoginScreen(game));
+            game.goToLogin();
             dispose();
         }
     }

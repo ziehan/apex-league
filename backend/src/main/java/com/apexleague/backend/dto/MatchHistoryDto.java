@@ -4,6 +4,17 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Setter;
+
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+@Setter
 public class MatchHistoryDto {
 
     @NotNull(message = "ID Player 1 wajib diisi")
@@ -114,5 +125,20 @@ public class MatchHistoryDto {
 
     public void setMatchBackwardGoals(int matchBackwardGoals) {
         this.matchBackwardGoals = matchBackwardGoals;
+    }
+
+    public static MatchHistoryDto fromEntity(com.apexleague.backend.model.MatchHistory matchHistory) {
+        return MatchHistoryDto.builder()
+                .player1Id(matchHistory.getPlayer1() != null ? matchHistory.getPlayer1().getId().toString() : null)
+                .player2Name(matchHistory.getPlayer2Name())
+                .player1Score(matchHistory.getPlayer1Score())
+                .player2Score(matchHistory.getPlayer2Score())
+                .matchResult(matchHistory.getMatchResult())
+                .carModelId(null)
+                .matchDemolitions(0)
+                .matchSaves(0)
+                .matchAssists(0)
+                .matchBackwardGoals(0)
+                .build();
     }
 }

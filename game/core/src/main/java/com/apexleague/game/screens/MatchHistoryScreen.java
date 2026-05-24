@@ -1,8 +1,8 @@
 package com.apexleague.game.screens;
 
 import com.apexleague.game.Main;
-import com.apexleague.game.state.GameManager;
-import com.apexleague.game.state.GameManager.MatchRecord;
+import com.apexleague.game.managers.GameManager;
+import com.apexleague.game.managers.GameManager.MatchRecord;
 import com.apexleague.game.ui.MenuFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -62,7 +62,7 @@ public class MatchHistoryScreen implements Screen {
         scrollPane.setFadeScrollBars(false);
         scrollPane.setScrollingDisabled(true, false);
 
-        TextButton backButton = new TextButton("BACK", skin);
+        TextButton backButton = MenuFactory.createTextButton(skin, "BACK");
 
         Table root = new Table();
         root.setFillParent(true);
@@ -77,7 +77,7 @@ public class MatchHistoryScreen implements Screen {
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new ProfileScreen(game));
+                game.goToProfile();
             }
         });
     }
@@ -85,6 +85,7 @@ public class MatchHistoryScreen implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+        GameManager.getInstance().fetchUserStats(() -> lastCount = -1);
     }
 
     @Override

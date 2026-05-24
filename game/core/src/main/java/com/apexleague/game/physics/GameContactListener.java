@@ -3,7 +3,7 @@ package com.apexleague.game.physics;
 import com.apexleague.game.components.PhysicsComponent;
 import com.apexleague.game.managers.BoostManager;
 import com.apexleague.game.screens.PlayScreen;
-import com.apexleague.game.state.GameManager;
+import com.apexleague.game.managers.GameManager;
 import com.apexleague.game.ui.HUD;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;

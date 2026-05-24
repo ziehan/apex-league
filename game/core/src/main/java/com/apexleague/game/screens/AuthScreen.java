@@ -1,7 +1,7 @@
 package com.apexleague.game.screens;
 
 import com.apexleague.game.Main;
-import com.apexleague.game.state.GameManager;
+import com.apexleague.game.managers.GameManager;
 import com.apexleague.game.ui.MenuFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -40,9 +40,9 @@ public class AuthScreen implements Screen {
         passwordField.setPasswordMode(true);
         passwordField.setPasswordCharacter('*');
 
-        TextButton loginButton = new TextButton("LOGIN", skin);
-        TextButton registerButton = new TextButton("REGISTER", skin);
-        TextButton guestButton = new TextButton("PLAY AS GUEST (OFFLINE)", skin);
+        TextButton loginButton = MenuFactory.createTextButton(skin, "LOGIN");
+        TextButton registerButton = MenuFactory.createTextButton(skin, "REGISTER");
+        TextButton guestButton = MenuFactory.createTextButton(skin, "PLAY AS GUEST (OFFLINE)");
 
         Table root = new Table();
         root.setFillParent(true);
@@ -62,7 +62,7 @@ public class AuthScreen implements Screen {
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                 GameManager.getInstance().currentUserToken = "GUEST";
                 GameManager.getInstance().currentUserId = "GUEST";
-                game.setScreen(new MainMenuScreen(game));
+                game.goToMainMenu();
                 dispose();
             }
         });
@@ -71,7 +71,7 @@ public class AuthScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                 sendAuthRequest("LOGIN", usernameField.getText(), passwordField.getText());
-                game.setScreen(new MainMenuScreen(game));
+                game.goToMainMenu();
                 dispose();
             }
         });
@@ -80,7 +80,7 @@ public class AuthScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                 sendAuthRequest("REGISTER", usernameField.getText(), passwordField.getText());
-                game.setScreen(new MainMenuScreen(game));
+                game.goToMainMenu();
                 dispose();
             }
         });

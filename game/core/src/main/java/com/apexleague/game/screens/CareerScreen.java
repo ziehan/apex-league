@@ -1,7 +1,7 @@
 package com.apexleague.game.screens;
 
 import com.apexleague.game.Main;
-import com.apexleague.game.state.GameManager;
+import com.apexleague.game.managers.GameManager;
 import com.apexleague.game.ui.MenuFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -34,6 +34,8 @@ public class CareerScreen implements Screen {
     private final Label p2GoalsLabel;
     private final Label p1SavesLabel;
     private final Label p2SavesLabel;
+    private final Label p1MmrLabel;
+    private final Label p2MmrLabel;
 
     public CareerScreen(Main game) {
         this.game = game;
@@ -66,6 +68,14 @@ public class CareerScreen implements Screen {
         statsTable.add(headerRed).width(120f).padBottom(12f).align(Align.center);
         statsTable.add(headerBlue).width(120f).padBottom(12f).align(Align.center).row();
 
+        statsTable.add(new Label("MMR", labelStyle)).padBottom(10f).align(Align.left);
+        p1MmrLabel = new Label("0", redStyle);
+        p1MmrLabel.setAlignment(Align.center);
+        statsTable.add(p1MmrLabel).padBottom(10f).align(Align.center);
+        p2MmrLabel = new Label("-", blueStyle);
+        p2MmrLabel.setAlignment(Align.center);
+        statsTable.add(p2MmrLabel).padBottom(10f).align(Align.center).row();
+
         statsTable.add(new Label("WINS", labelStyle)).padBottom(10f).align(Align.left);
         p1WinsLabel = new Label("0", redStyle);
         p1WinsLabel.setAlignment(Align.center);
@@ -90,7 +100,7 @@ public class CareerScreen implements Screen {
         p2SavesLabel.setAlignment(Align.center);
         statsTable.add(p2SavesLabel).padBottom(10f).align(Align.center).row();
 
-        TextButton backButton = new TextButton("BACK", skin);
+        TextButton backButton = MenuFactory.createTextButton(skin, "BACK");
 
         Table root = new Table();
         root.setFillParent(true);
@@ -105,7 +115,7 @@ public class CareerScreen implements Screen {
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new ProfileScreen(game));
+                game.goToProfile();
             }
         });
     }
@@ -113,6 +123,17 @@ public class CareerScreen implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
+        GameManager.getInstance().fetchUserStats(() -> {
+            GameManager gm = GameManager.getInstance();
+            p1MmrLabel.setText(String.valueOf(gm.mmr));
+            p2MmrLabel.setText("-");
+            p1WinsLabel.setText(String.valueOf(gm.totalWins));
+            p2WinsLabel.setText("0");
+            p1GoalsLabel.setText(String.valueOf(gm.totalGoals));
+            p2GoalsLabel.setText("0");
+            p1SavesLabel.setText(String.valueOf(gm.totalSaves));
+            p2SavesLabel.setText("0");
+        });
     }
 
     @Override
@@ -127,12 +148,14 @@ public class CareerScreen implements Screen {
         game.batch.setColor(Color.WHITE);
 
         GameManager gm = GameManager.getInstance();
-        p1WinsLabel.setText(String.valueOf(gm.totalP1Wins));
-        p2WinsLabel.setText(String.valueOf(gm.totalP2Wins));
-        p1GoalsLabel.setText(String.valueOf(gm.totalP1Goals));
-        p2GoalsLabel.setText(String.valueOf(gm.totalP2Goals));
-        p1SavesLabel.setText(String.valueOf(gm.p1Saves));
-        p2SavesLabel.setText(String.valueOf(gm.p2Saves));
+        p1MmrLabel.setText(String.valueOf(gm.mmr));
+        p2MmrLabel.setText("-");
+        p1WinsLabel.setText(String.valueOf(gm.totalWins));
+        p2WinsLabel.setText("0");
+        p1GoalsLabel.setText(String.valueOf(gm.totalGoals));
+        p2GoalsLabel.setText("0");
+        p1SavesLabel.setText(String.valueOf(gm.totalSaves));
+        p2SavesLabel.setText("0");
 
         stage.act(delta);
         stage.draw();

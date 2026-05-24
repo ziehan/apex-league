@@ -1,11 +1,14 @@
 package com.apexleague.game.screens;
 
 import com.apexleague.game.Main;
+import com.apexleague.game.managers.GameManager;
 import com.apexleague.game.ui.MenuFactory;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -45,8 +48,8 @@ public class RegisterScreen implements Screen {
         confirmPasswordField.setPasswordMode(true);
         confirmPasswordField.setPasswordCharacter('*');
 
-        TextButton registerBtn = new TextButton("REGISTER", skin);
-        TextButton loginLinkBtn = new TextButton("Back to Login", skin);
+        TextButton registerBtn = MenuFactory.createTextButton(skin, "REGISTER");
+        TextButton loginLinkBtn = MenuFactory.createTextButton(skin, "Back to Login");
 
         Table glassPanel = new Table();
         glassPanel.center();
@@ -69,7 +72,54 @@ public class RegisterScreen implements Screen {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                 if (passwordField.getText().equals(confirmPasswordField.getText())) {
-                    // TODO: Call API to register user.
+                    registerBtn.setText("LOADING...");
+                    registerBtn.setDisabled(true);
+
+                    String requestJson = "{\"username\":\"" + usernameField.getText() + "\",\"password\":\"" + passwordField.getText() + "\"}";
+                    HttpRequestBuilder builder = new HttpRequestBuilder();
+                    Net.HttpRequest request = builder.newRequest()
+                        .method(Net.HttpMethods.POST)
+                        .url(GameManager.API_BASE_URL + "/users/register")
+                        .header("Content-Type", "application/json")
+                        .content(requestJson)
+                        .build();
+
+                    Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+                        @Override
+                        public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                            int status = httpResponse.getStatus().getStatusCode();
+                            if (status == 200 || status == 201) {
+                                Gdx.app.postRunnable(() -> {
+                                    game.goToLogin();
+                                    dispose();
+                                });
+                            } else {
+                                Gdx.app.error("Register", "Register failed: HTTP " + status + " - " + httpResponse.getResultAsString());
+                                Gdx.app.postRunnable(() -> {
+                                    registerBtn.setText("REGISTER");
+                                    registerBtn.setDisabled(false);
+                                });
+                            }
+                        }
+
+                        @Override
+                        public void failed(Throwable t) {
+                            Gdx.app.error("Register", "Register request failed", t);
+                            Gdx.app.postRunnable(() -> {
+                                registerBtn.setText("REGISTER");
+                                registerBtn.setDisabled(false);
+                            });
+                        }
+
+                        @Override
+                        public void cancelled() {
+                            Gdx.app.error("Register", "Register request cancelled");
+                            Gdx.app.postRunnable(() -> {
+                                registerBtn.setText("REGISTER");
+                                registerBtn.setDisabled(false);
+                            });
+                        }
+                    });
                 } else {
                     passwordField.setText("");
                     confirmPasswordField.setText("");
@@ -80,7 +130,7 @@ public class RegisterScreen implements Screen {
         loginLinkBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new LoginScreen(game));
+                game.goToLogin();
             }
         });
     }

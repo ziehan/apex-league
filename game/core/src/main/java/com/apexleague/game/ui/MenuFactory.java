@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
@@ -20,21 +21,37 @@ public final class MenuFactory {
 
     public static Skin createDefaultSkin() {
         Skin skin = new Skin();
-        FreeTypeFontGenerator titleGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/Robot-Crush.ttf"));
-        FreeTypeFontGenerator uiGenerator = new FreeTypeFontGenerator(Gdx.files.internal("ui/Dunkerque-Regular.otf"));
+        BitmapFont defaultFont = null;
+        BitmapFont titleFont = null;
 
-        FreeTypeFontGenerator.FreeTypeFontParameter titleParams = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        titleParams.size = 72;
-        BitmapFont titleFont = titleGenerator.generateFont(titleParams);
+        FileHandle minecraftoryFont = Gdx.files.internal("ui/Minecraftory.ttf");
+        FileHandle fallbackMinecraftoryFont = Gdx.files.internal("ui/Minercraftory.ttf");
+        FileHandle fontFile = minecraftoryFont.exists() ? minecraftoryFont : (fallbackMinecraftoryFont.exists() ? fallbackMinecraftoryFont : null);
+
+        if (fontFile != null) {
+            FreeTypeFontGenerator generator = new FreeTypeFontGenerator(fontFile);
+            try {
+                FreeTypeFontGenerator.FreeTypeFontParameter defaultParams = new FreeTypeFontGenerator.FreeTypeFontParameter();
+                defaultParams.size = 20;
+                defaultFont = generator.generateFont(defaultParams);
+
+                FreeTypeFontGenerator.FreeTypeFontParameter titleParams = new FreeTypeFontGenerator.FreeTypeFontParameter();
+                titleParams.size = 40;
+                titleFont = generator.generateFont(titleParams);
+            } finally {
+                generator.dispose();
+            }
+        }
+
+        if (defaultFont == null) {
+            defaultFont = new BitmapFont();
+        }
+        if (titleFont == null) {
+            titleFont = new BitmapFont();
+        }
+
+        skin.add("default-font", defaultFont);
         skin.add("title-font", titleFont);
-
-        FreeTypeFontGenerator.FreeTypeFontParameter uiParams = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        uiParams.size = 24;
-        BitmapFont font = uiGenerator.generateFont(uiParams);
-        skin.add("default-font", font);
-
-        titleGenerator.dispose();
-        uiGenerator.dispose();
 
         Pixmap pixmap = new Pixmap(1, 1, Pixmap.Format.RGBA8888);
         pixmap.setColor(Color.WHITE);
@@ -43,7 +60,7 @@ public final class MenuFactory {
         pixmap.dispose();
         skin.add("white", texture);
 
-        Label.LabelStyle labelStyle = new Label.LabelStyle(font, Color.WHITE);
+        Label.LabelStyle labelStyle = new Label.LabelStyle(defaultFont, Color.WHITE);
         skin.add("default", labelStyle);
 
         Drawable up = new TextureRegionDrawable(new TextureRegion(texture)).tint(new Color(0.16f, 0.2f, 0.26f, 0.9f));
@@ -54,12 +71,12 @@ public final class MenuFactory {
         buttonStyle.up = up;
         buttonStyle.over = over;
         buttonStyle.down = down;
-        buttonStyle.font = font;
+        buttonStyle.font = defaultFont;
         buttonStyle.fontColor = Color.WHITE;
         skin.add("default", buttonStyle);
 
         TextField.TextFieldStyle textFieldStyle = new TextField.TextFieldStyle();
-        textFieldStyle.font = font;
+        textFieldStyle.font = defaultFont;
         textFieldStyle.fontColor = Color.WHITE;
         textFieldStyle.background = new TextureRegionDrawable(new TextureRegion(texture)).tint(new Color(0.12f, 0.16f, 0.22f, 0.9f));
         textFieldStyle.cursor = new TextureRegionDrawable(new TextureRegion(texture)).tint(Color.WHITE);
@@ -71,6 +88,10 @@ public final class MenuFactory {
 
     public static Drawable createPanelDrawable(Skin skin, Color color) {
         return skin.newDrawable("white", color);
+    }
+
+    public static TextButton createTextButton(Skin skin, String text) {
+        return new TextButton(text, skin);
     }
 }
 
