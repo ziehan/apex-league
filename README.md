@@ -4,12 +4,13 @@
 
 This repository contains the game client (libGDX) and a Spring Boot backend API used for user accounts, match history, leaderboards, and car statistics.
 
-**Quick links**
+## Quick links
 - Game design summary: [docs/Game Design Document_ Apex League_ Kinematic Kickoff (1).md](c:\Users\nazie\Downloads\Game Design Document_ Apex League_ Kinematic Kickoff (1).md#L1)
 - Backend application properties: [backend/src/main/resources/application.properties](backend/src/main/resources/application.properties#L1)
 - Backend controllers: [backend/src/main/java/com/apexleague/backend/controller/UserController.java](backend/src/main/java/com/apexleague/backend/controller/UserController.java#L1)
 
-**Contents**
+## Contents
+
 - **Overview** — ringkasan permainan
 - **Project structure** — modul dan file penting
 - **API / Endpoints** — daftar endpoint backend dengan contoh payload
@@ -17,7 +18,7 @@ This repository contains the game client (libGDX) and a Spring Boot backend API 
 - **Setup Client (Frontend / Game)** — menjalankan game lokal di desktop
 - **Notes** — Redis, database, dan pengaturan keamanan ringan
 
-**Overview**
+## Overview
 
 Apex League adalah game sepak bola mobil 2D (top-down) yang menekankan pengendalian momentum dan manuver berbasis impulse pada bidang datar. Fitur utama berdasarkan dokumen desain:
 - Mekanik "lompat" 2D berupa linear impulse pada X/Y
@@ -25,7 +26,7 @@ Apex League adalah game sepak bola mobil 2D (top-down) yang menekankan pengendal
 - Demolition saat menabrak dengan kecepatan tinggi
 - Sistem ECS ringan, object pool, dan arsitektur modular (lihat dokumen desain terlampir)
 
-**Project Structure (ringkasan)**
+## Project Structure
 
 - **backend/** — Spring Boot API (Java 17, Gradle). Lihat [backend/build.gradle](backend/build.gradle#L1)
 	- `src/main/java/com/apexleague/backend/controller/` — controller API (user, leaderboard, matches, car-stats)
@@ -37,7 +38,7 @@ Apex League adalah game sepak bola mobil 2D (top-down) yang menekankan pengendal
 
 Refer to code for full details when needed.
 
-**Backend API / Endpoints**
+## Backend API / Endpoints
 
 Base URL: `http://localhost:8080` (default Spring Boot port)
 
@@ -85,7 +86,7 @@ Base URL: `http://localhost:8080` (default Spring Boot port)
 	- Ambil top players berdasarkan strategi leaderboard (Redis-backed for beberapa kategori). Lihat [backend/src/main/java/com/apexleague/backend/service/implementation/WinsLeaderboardStrategy.java](backend/src/main/java/com/apexleague/backend/service/implementation/WinsLeaderboardStrategy.java#L1)
 - GET `/api/leaderboard/keys` — daftar key leaderboard di Redis
 
-**Setup Backend (lengkap)**
+## Setup Backend
 
 1) Prasyarat
 	 - Java 17 (toolchain disetel di Gradle)
@@ -126,7 +127,7 @@ java -jar build\libs\backend-0.0.1-SNAPSHOT.jar
 5) Verifikasi
 	 - API akan tersedia di `http://localhost:8080` (cek `http://localhost:8080/api/users`)
 
-**Setup Client / Frontend (Game — libGDX desktop)**
+## Setup Client / Frontend (Game — libGDX desktop)
 
 1) Prasyarat
 	 - Java 17
@@ -151,3 +152,30 @@ java -jar build\libs\backend-0.0.1-SNAPSHOT.jar
 
 5) Pengaturan koneksi ke backend
 	 - Jika game memiliki integrasi online, titik akhir API backend diasumsikan `http://localhost:8080/api`. Sesuaikan alamat di konfigurasi client (cek modul `core`/`lwjgl3` untuk kode koneksi HTTP jika tersedia).
+
+## Screenshots & Documentation
+
+### Database ERD
+
+![Database ERD](docs/Apex%20League%20ERD.png)
+
+### Title / Menu
+
+![Title Screen](docs/dokumentasi/title.png)
+
+### Login Screen
+
+![Login Screen](docs/dokumentasi/login%20screen.png)
+
+### Profile / Career
+
+![Profile Screen](docs/dokumentasi/profile%20screen.png)
+
+### Play Screen (arena)
+
+![Play Screen](docs/dokumentasi/play%20screen.png)
+
+### Match History & Leaderboards
+
+![Match History](docs/dokumentasi/match%20history.png)
+![MMR Leaderboard](docs/dokumentasi/mmr%20leaderboard.png)
