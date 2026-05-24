@@ -26,7 +26,7 @@ public class AuthScreen implements Screen {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         skin = MenuFactory.createDefaultSkin();
-        pitchTex = new Texture("images/football_pitch.png");
+        pitchTex = new Texture("images/bg.png");
 
         Label header = new Label("USER AUTHENTICATION", skin);
         header.setColor(Color.GOLD);

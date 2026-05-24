@@ -145,7 +145,7 @@ public class MatchHistoryServiceImpl implements MatchHistoryService {
     @Override
     public List<MatchHistory> getPlayerMatchHistory(String player1Id) {
         UUID parsedId = UUID.fromString(player1Id);
-        return matchHistoryRepository.findByPlayer1IdOrderByCreatedAtDesc(parsedId);
+        return matchHistoryRepository.findTop20ByPlayer1IdOrderByCreatedAtDesc(parsedId);
     }
 
     @Override

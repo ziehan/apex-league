@@ -28,7 +28,7 @@ public class MainMenuScreen implements Screen {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         skin = MenuFactory.createDefaultSkin();
-        pitchTex = new Texture("images/football_pitch.png");
+        pitchTex = new Texture("images/bg.png");
 
         Label title = new Label("APEX LEAGUE", skin);
         TextButton playButton = MenuFactory.createTextButton(skin, "PLAY");

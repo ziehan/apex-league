@@ -29,7 +29,7 @@ public class RegisterScreen implements Screen {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         skin = MenuFactory.createDefaultSkin();
-        pitchTex = new Texture("images/football_pitch.png");
+        pitchTex = new Texture("images/bg.png");
 
         Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("title-font"), Color.GOLD);
         Label header = new Label("REGISTER", titleStyle);
@@ -65,6 +65,7 @@ public class RegisterScreen implements Screen {
         Table root = new Table();
         root.setFillParent(true);
         root.center();
+        root.setBackground(new com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable(new com.badlogic.gdx.graphics.g2d.TextureRegion(pitchTex)));
         root.add(glassPanel).width(400f);
         stage.addActor(root);
 

@@ -47,7 +47,7 @@ public class LeaderboardScreen implements Screen {
         stage = new Stage(new ScreenViewport());
         skin = MenuFactory.createDefaultSkin();
 
-        pitchTex = new Texture("images/football_pitch.png");
+        pitchTex = new Texture("images/bg.png");
 
         tableBgDrawable = createTableBackground(new Color(0f, 0f, 0f, 0.8f));
         rowLightDrawable = createTableBackground(new Color(1f, 1f, 1f, 0.05f));

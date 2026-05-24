@@ -8,5 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface MatchHistoryRepository extends JpaRepository<MatchHistory, UUID> {
-    List<MatchHistory> findByPlayer1IdOrderByCreatedAtDesc(UUID player1Id);
+    List<MatchHistory> findTop20ByPlayer1IdOrderByCreatedAtDesc(UUID player1Id);
 }

@@ -42,7 +42,7 @@ public class MatchHistoryScreen implements Screen {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         skin = MenuFactory.createDefaultSkin();
-        pitchTex = new Texture("images/football_pitch.png");
+        pitchTex = new Texture("images/bg.png");
         tableBgDrawable = createTableBackground(new Color(0f, 0f, 0f, 0.8f));
         rowLightDrawable = createTableBackground(new Color(1f, 1f, 1f, 0.05f));
         rowDarkDrawable = createTableBackground(new Color(1f, 1f, 1f, 0.02f));
@@ -120,7 +120,7 @@ public class MatchHistoryScreen implements Screen {
         Label.LabelStyle blueWinStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.CYAN);
         Label.LabelStyle drawStyle = new Label.LabelStyle(skin.getFont("default-font"), Color.GOLD);
 
-        for (int i = gm.matchHistory.size - 1; i >= 0; i--) {
+        for (int i = 0; i < gm.matchHistory.size; i++) {
             MatchRecord record = gm.matchHistory.get(i);
             Table row = new Table();
             row.setBackground((i % 2 == 0) ? rowLightDrawable : rowDarkDrawable);

@@ -26,7 +26,7 @@ public class TitleScreen implements Screen {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         skin = MenuFactory.createDefaultSkin();
-        pitchTex = new Texture("images/football_pitch.png");
+        pitchTex = new Texture("images/bg.png");
 
         Label.LabelStyle titleStyle = new Label.LabelStyle(skin.getFont("title-font"), Color.GOLD);
         Label titleLabel = new Label("APEX LEAGUE", titleStyle);
