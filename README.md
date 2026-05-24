@@ -4,11 +4,6 @@
 
 This repository contains the game client (libGDX) and a Spring Boot backend API used for user accounts, match history, leaderboards, and car statistics.
 
-## Quick links
-- Game design summary: [docs/Game Design Document_ Apex League_ Kinematic Kickoff (1).md](c:\Users\nazie\Downloads\Game Design Document_ Apex League_ Kinematic Kickoff (1).md#L1)
-- Backend application properties: [backend/src/main/resources/application.properties](backend/src/main/resources/application.properties#L1)
-- Backend controllers: [backend/src/main/java/com/apexleague/backend/controller/UserController.java](backend/src/main/java/com/apexleague/backend/controller/UserController.java#L1)
-
 ## Contents
 
 - **Overview** — ringkasan permainan
@@ -152,6 +147,21 @@ java -jar build\libs\backend-0.0.1-SNAPSHOT.jar
 
 5) Pengaturan koneksi ke backend
 	 - Jika game memiliki integrasi online, titik akhir API backend diasumsikan `http://localhost:8080/api`. Sesuaikan alamat di konfigurasi client (cek modul `core`/`lwjgl3` untuk kode koneksi HTTP jika tersedia).
+
+## Diagram
+
+### Flowchart
+
+![Flowchart](docs/apex%20league%20flowchart.png)
+
+### UML Sequence
+
+![UML Sequence](docs/apex%20league%20uml%20sequence%20diagram.png)
+
+### UML Class
+
+![UML Class](docs/apex%20league%20uml%20class%20diagram.png)
+
 
 ## Screenshots & Documentation
 

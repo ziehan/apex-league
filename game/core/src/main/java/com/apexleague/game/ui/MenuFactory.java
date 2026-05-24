@@ -93,5 +93,13 @@ public final class MenuFactory {
     public static TextButton createTextButton(Skin skin, String text) {
         return new TextButton(text, skin);
     }
-}
 
+    public static Drawable createStadiumBackground() {
+        FileHandle bgFile = Gdx.files.internal("images/bg.png");
+        if (bgFile.exists()) {
+            Texture bgTexture = new Texture(bgFile);
+            return new TextureRegionDrawable(new TextureRegion(bgTexture));
+        }
+        return null;
+    }
+}

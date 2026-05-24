@@ -51,7 +51,7 @@ public class GarageScreen implements Screen {
 
         stage = new Stage(new ScreenViewport());
         skin = MenuFactory.createDefaultSkin();
-        pitchTex = new Texture("images/football_pitch.png");
+        pitchTex = new Texture("images/bg.png");
 
         Label header = new Label("GARAGE", skin);
         header.setColor(Color.GOLD);

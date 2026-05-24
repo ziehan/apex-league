@@ -24,7 +24,7 @@ public class ProfileScreen implements Screen {
         this.game = game;
         stage = new Stage(new ScreenViewport());
         skin = MenuFactory.createDefaultSkin();
-        pitchTex = new Texture("images/football_pitch.png");
+        pitchTex = new Texture("images/bg.png");
 
         Label header = new Label("PROFILE", skin);
         header.setColor(Color.GOLD);
