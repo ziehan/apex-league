@@ -7,7 +7,7 @@ import com.apexleague.game.entities.PlayerEntity;
 import com.apexleague.game.factories.ArenaFactory;
 import com.apexleague.game.managers.BoostManager;
 import com.apexleague.game.physics.GameContactListener;
-import com.apexleague.game.state.GameManager;
+import com.apexleague.game.managers.GameManager;
 import com.apexleague.game.systems.InputSystem;
 import com.apexleague.game.systems.JumpSystem;
 import com.apexleague.game.systems.MovementSystem;
@@ -93,6 +93,12 @@ public class PlayScreen extends ScreenAdapter {
         b2dr = new Box2DDebugRenderer();
         hud = new HUD();
         gameManager = GameManager.getInstance();
+        gameManager.p1CarType = gameManager.lastUsedP1Car != null && !gameManager.lastUsedP1Car.isEmpty()
+                ? gameManager.lastUsedP1Car
+                : gameManager.p1CarType;
+        gameManager.p2CarType = gameManager.lastUsedP2Car != null && !gameManager.lastUsedP2Car.isEmpty()
+                ? gameManager.lastUsedP2Car
+                : gameManager.p2CarType;
         gameManager.resetMatchRecordFlag();
         pitchTex = new Texture("images/football_pitch.png");
         p1CarTex = new Texture(resolveCarTexturePath(gameManager.p1CarType));
@@ -175,7 +181,7 @@ public class PlayScreen extends ScreenAdapter {
         if (gameManager.isGameOver) {
             gameManager.isPaused = false;
             Gdx.input.setInputProcessor(null);
-            game.setScreen(new GameOverScreen(game));
+            game.goToGameOver();
             return;
         }
 
@@ -195,6 +201,7 @@ public class PlayScreen extends ScreenAdapter {
                             boolean leftWins = gameManager.leftScore > gameManager.rightScore;
                             gameManager.winnerText = leftWins ? "KIRI MENANG!" : "KANAN MENANG!";
                             gameManager.recordMatchEnd();
+                            gameManager.submitMatchResult();
                             if (hud != null) {
                                 hud.setCenterText(gameManager.winnerText);
                             }
@@ -397,9 +404,9 @@ public class PlayScreen extends ScreenAdapter {
 
     private void buildPauseMenu() {
         Label title = new Label("PAUSED", pauseSkin);
-        TextButton resumeButton = new TextButton("RESUME", pauseSkin);
-        TextButton restartButton = new TextButton("RESTART MATCH", pauseSkin);
-        TextButton menuButton = new TextButton("MAIN MENU", pauseSkin);
+        TextButton resumeButton = MenuFactory.createTextButton(pauseSkin, "RESUME");
+        TextButton restartButton = MenuFactory.createTextButton(pauseSkin, "RESTART MATCH");
+        TextButton menuButton = MenuFactory.createTextButton(pauseSkin, "MAIN MENU");
 
         Table table = new Table();
         table.setFillParent(true);
@@ -441,7 +448,7 @@ public class PlayScreen extends ScreenAdapter {
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                 gameManager.isPaused = false;
                 Gdx.input.setInputProcessor(null);
-                game.setScreen(new MainMenuScreen(game));
+                game.goToMainMenu();
             }
         });
     }

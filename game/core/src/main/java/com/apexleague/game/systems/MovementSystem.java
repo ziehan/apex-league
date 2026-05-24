@@ -2,7 +2,7 @@ package com.apexleague.game.systems;
 
 import com.apexleague.game.components.InputComponent;
 import com.apexleague.game.components.PhysicsComponent;
-import com.apexleague.game.state.GameManager;
+import com.apexleague.game.managers.GameManager;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;

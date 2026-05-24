@@ -6,6 +6,7 @@ import com.apexleague.backend.service.UserCarStatService;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Service
 public class UserCarStatServiceImpl implements UserCarStatService {
@@ -23,6 +24,7 @@ public class UserCarStatServiceImpl implements UserCarStatService {
 
     @Override
     public List<UserCarStat> getStatsByUserId(String userId) {
-        return userCarStatRepository.findByUserId(userId);
+        UUID parsedId = UUID.fromString(userId);
+        return userCarStatRepository.findByUserId(parsedId);
     }
 }

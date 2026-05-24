@@ -1,11 +1,14 @@
 package com.apexleague.game.screens;
 
 import com.apexleague.game.Main;
+import com.apexleague.game.managers.GameManager;
 import com.apexleague.game.ui.MenuFactory;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
@@ -13,6 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.JsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 
@@ -40,8 +45,8 @@ public class LoginScreen implements Screen {
         passwordField.setPasswordMode(true);
         passwordField.setPasswordCharacter('*');
 
-        TextButton loginBtn = new TextButton("LOGIN", skin);
-        TextButton registerLinkBtn = new TextButton("Create Account", skin);
+        TextButton loginBtn = MenuFactory.createTextButton(skin, "LOGIN");
+        TextButton registerLinkBtn = MenuFactory.createTextButton(skin, "Create Account");
 
         Table glassPanel = new Table();
         glassPanel.center();
@@ -62,14 +67,66 @@ public class LoginScreen implements Screen {
         registerLinkBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new RegisterScreen(game));
+                game.goToRegister();
             }
         });
 
         loginBtn.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new MainMenuScreen(game));
+                loginBtn.setText("LOADING...");
+                loginBtn.setDisabled(true);
+
+                String requestJson = "{\"username\":\"" + usernameField.getText() + "\",\"password\":\"" + passwordField.getText() + "\"}";
+                HttpRequestBuilder builder = new HttpRequestBuilder();
+                Net.HttpRequest request = builder.newRequest()
+                    .method(Net.HttpMethods.POST)
+                    .url(GameManager.API_BASE_URL + "/users/login")
+                    .header("Content-Type", "application/json")
+                    .content(requestJson)
+                    .build();
+
+                Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+                    @Override
+                    public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                        int status = httpResponse.getStatus().getStatusCode();
+                        if (status == 200) {
+                            JsonValue root = new JsonReader().parse(httpResponse.getResultAsString());
+                            GameManager gm = GameManager.getInstance();
+                            gm.jwtToken = root.getString("token", "");
+                            gm.currentUserId = root.getString("id", "");
+                            gm.currentUsername = usernameField.getText();
+                            Gdx.app.postRunnable(() -> {
+                                game.goToMainMenu();
+                                dispose();
+                            });
+                        } else {
+                            Gdx.app.error("LOGIN", "Login failed: HTTP " + status + " - " + httpResponse.getResultAsString());
+                            Gdx.app.postRunnable(() -> {
+                                loginBtn.setText("LOGIN");
+                                loginBtn.setDisabled(false);
+                            });
+                        }
+                    }
+
+                    @Override
+                    public void failed(Throwable t) {
+                        Gdx.app.error("LOGIN", "HTTP FAIL: " + t.getMessage(), t);
+                        Gdx.app.postRunnable(() -> {
+                            loginBtn.setText("LOGIN");
+                            loginBtn.setDisabled(false);
+                        });
+                    }
+
+                    @Override
+                    public void cancelled() {
+                        Gdx.app.error("LOGIN", "Login request cancelled");
+                        Gdx.app.postRunnable(() -> {
+                            loginBtn.setText("LOGIN");
+                            loginBtn.setDisabled(false);
+                        });
+                    }
+                });
             }
         });
     }
@@ -98,20 +155,14 @@ public class LoginScreen implements Screen {
     public void resize(int width, int height) {
         stage.getViewport().update(width, height, true);
     }
-
     @Override
-    public void pause() {
-    }
-
+    public void pause() {}
     @Override
-    public void resume() {
-    }
-
+    public void resume() {}
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);
     }
-
     @Override
     public void dispose() {
         stage.dispose();
@@ -119,4 +170,3 @@ public class LoginScreen implements Screen {
         pitchTex.dispose();
     }
 }
-

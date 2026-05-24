@@ -2,6 +2,7 @@ package com.apexleague.backend.model;
 
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
+import java.util.UUID;
 import org.hibernate.annotations.UpdateTimestamp;
 
 @Entity
@@ -15,10 +16,11 @@ public class UserCarStat {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
-    @Column(name = "user_id", nullable = false)
-    private String userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 
     @Column(name = "car_model_id", nullable = false)
     private String carModelId;
@@ -36,20 +38,20 @@ public class UserCarStat {
     @Column(name = "last_used")
     private LocalDateTime lastUsed;
 
-    public String getId() {
+    public UUID getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(UUID id) {
         this.id = id;
     }
 
-    public String getUserId() {
-        return userId;
+    public User getUser() {
+        return user;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setUser(User user) {
+        this.user = user;
     }
 
     public String getCarModelId() {

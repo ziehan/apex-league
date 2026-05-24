@@ -1,5 +1,6 @@
 package com.apexleague.game.managers;
 
+import com.apexleague.game.pool.BoostPadPool;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef;
 import com.badlogic.gdx.physics.box2d.CircleShape;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.badlogic.gdx.utils.Pool;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -15,24 +17,29 @@ import java.util.List;
 
 public class BoostManager {
     private final List<BoostPad> boostPads = new ArrayList<>();
+    private final BoostPadPool boostPadPool = new BoostPadPool();
     private final Texture bigPadTex = new Texture("images/big_boost_pad.png");
     private final Texture bigBoostTex = new Texture("images/big_boost.png");
     private final Texture smallPadTex = new Texture("images/small_boost_pad.png");
     private final Texture smallBoostTex = new Texture("images/small_boost.png");
 
-    public static final class BoostPad {
-        private final Vector2 position;
-        private final float radius;
-        private final boolean isLarge;
+    public static final class BoostPad implements Pool.Poolable {
+        private final Vector2 position = new Vector2();
+        private float radius;
+        private boolean isLarge;
         private boolean isActive;
         private float cooldownTimer;
 
-        private BoostPad(float x, float y, float radius, boolean isLarge) {
-            this.position = new Vector2(x, y);
+        public BoostPad() {
+        }
+
+        public BoostPad configure(float x, float y, float radius, boolean isLarge) {
+            this.position.set(x, y);
             this.radius = radius;
             this.isLarge = isLarge;
             this.isActive = true;
             this.cooldownTimer = 0f;
+            return this;
         }
 
         public Vector2 getPosition() {
@@ -64,6 +71,15 @@ public class BoostManager {
                     isActive = true;
                 }
             }
+        }
+
+        @Override
+        public void reset() {
+            position.set(0f, 0f);
+            radius = 0f;
+            isLarge = false;
+            isActive = true;
+            cooldownTimer = 0f;
         }
     }
 
@@ -97,7 +113,7 @@ public class BoostManager {
         fdef.shape = shape;
         fdef.isSensor = true;
 
-        BoostPad pad = new BoostPad(x, y, radius, isLarge);
+        BoostPad pad = boostPadPool.obtain().configure(x, y, radius, isLarge);
         body.createFixture(fdef).setUserData(pad);
         boostPads.add(pad);
         shape.dispose();
@@ -128,6 +144,10 @@ public class BoostManager {
         bigBoostTex.dispose();
         smallPadTex.dispose();
         smallBoostTex.dispose();
+        for (BoostPad pad : boostPads) {
+            boostPadPool.free(pad);
+        }
+        boostPads.clear();
     }
 
     public List<BoostPad> getBoostPads() {

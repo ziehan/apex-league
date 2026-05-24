@@ -30,10 +30,10 @@ public class ProfileScreen implements Screen {
         header.setColor(Color.GOLD);
         header.setFontScale(1.5f);
 
-        TextButton careerButton = new TextButton("CAREER", skin);
-        TextButton matchHistoryButton = new TextButton("MATCH HISTORY", skin);
-        TextButton leaderboardButton = new TextButton("LEADERBOARD", skin);
-        TextButton backButton = new TextButton("BACK", skin);
+        TextButton careerButton = MenuFactory.createTextButton(skin, "CAREER");
+        TextButton matchHistoryButton = MenuFactory.createTextButton(skin, "MATCH HISTORY");
+        TextButton leaderboardButton = MenuFactory.createTextButton(skin, "LEADERBOARD");
+        TextButton backButton = MenuFactory.createTextButton(skin, "BACK");
 
         Table root = new Table();
         root.setFillParent(true);
@@ -50,28 +50,28 @@ public class ProfileScreen implements Screen {
         careerButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new CareerScreen(game));
+                game.goToCareer();
             }
         });
 
         matchHistoryButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new MatchHistoryScreen(game));
+                game.goToMatchHistory();
             }
         });
 
         leaderboardButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new LeaderboardScreen(game));
+                game.goToLeaderboard();
             }
         });
 
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new MainMenuScreen(game));
+                game.goToMainMenu();
             }
         });
     }

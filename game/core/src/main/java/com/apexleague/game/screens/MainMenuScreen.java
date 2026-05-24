@@ -1,7 +1,7 @@
 package com.apexleague.game.screens;
 
 import com.apexleague.game.Main;
-import com.apexleague.game.state.GameManager;
+import com.apexleague.game.managers.GameManager;
 import com.apexleague.game.ui.MenuFactory;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
@@ -31,10 +31,10 @@ public class MainMenuScreen implements Screen {
         pitchTex = new Texture("images/football_pitch.png");
 
         Label title = new Label("APEX LEAGUE", skin);
-        TextButton playButton = new TextButton("PLAY", skin);
-        TextButton garageButton = new TextButton("GARAGE", skin);
-        TextButton profileButton = new TextButton("PROFILE", skin);
-        TextButton quitButton = new TextButton("QUIT", skin);
+        TextButton playButton = MenuFactory.createTextButton(skin, "PLAY");
+        TextButton garageButton = MenuFactory.createTextButton(skin, "GARAGE");
+        TextButton profileButton = MenuFactory.createTextButton(skin, "PROFILE");
+        TextButton quitButton = MenuFactory.createTextButton(skin, "QUIT");
         statsLabel = new Label("", skin);
 
         mainTable = new Table();
@@ -58,21 +58,21 @@ public class MainMenuScreen implements Screen {
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
                 GameManager.getInstance().resetStats();
                 GameManager.getInstance().resetMatchRecordFlag();
-                game.setScreen(new PlayScreen(game));
+                game.goToPlay();
             }
         });
 
         garageButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new GarageScreen(game));
+                game.goToGarage();
             }
         });
 
         profileButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new ProfileScreen(game));
+                game.goToProfile();
             }
         });
 
@@ -82,8 +82,6 @@ public class MainMenuScreen implements Screen {
                 Gdx.app.exit();
             }
         });
-
-        // Profile navigation now handled by ProfileScreen.
     }
 
     @Override

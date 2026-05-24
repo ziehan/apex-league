@@ -4,7 +4,40 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8e118220-2cdc-4c8e-9b1b-c9809aab6c42" name="Changes" comment="" />
+    <list default="true" id="8e118220-2cdc-4c8e-9b1b-c9809aab6c42" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/build.gradle" beforeDir="false" afterPath="$PROJECT_DIR$/backend/build.gradle" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/controller/MatchHistoryController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/controller/MatchHistoryController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/controller/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/controller/UserController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/dto/MatchHistoryDto.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/dto/MatchHistoryDto.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/model/MatchHistory.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/model/MatchHistory.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/model/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/model/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/model/UserCarStat.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/model/UserCarStat.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/repository/MatchHistoryRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/repository/MatchHistoryRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/repository/UserCarStatRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/repository/UserCarStatRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/repository/UserRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/repository/UserRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/service/implementation/MatchHistoryServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/service/implementation/MatchHistoryServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/service/implementation/UserCarStatServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/service/implementation/UserCarStatServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/service/implementation/UserServiceImpl.java" beforeDir="false" afterPath="$PROJECT_DIR$/backend/src/main/java/com/apexleague/backend/service/implementation/UserServiceImpl.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/Main.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/entities/PlayerEntity.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/entities/PlayerEntity.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/managers/BoostManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/managers/BoostManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/AuthScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/AuthScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/CareerScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/CareerScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/GameOverScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/GameOverScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/GarageScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/GarageScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/LeaderboardScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/LeaderboardScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/LoginScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/LoginScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/MainMenuScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/MainMenuScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/MatchHistoryScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/MatchHistoryScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/PlayScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/PlayScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/ProfileScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/ProfileScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/RegisterScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/RegisterScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/TitleScreen.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/screens/TitleScreen.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/state/GameManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/state/GameManager.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/ui/MenuFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/game/core/src/main/java/com/apexleague/game/ui/MenuFactory.java" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -13,11 +46,28 @@
   <component name="CopilotChats">
     <option name="panelChat">
       <chat>
-        <option name="activeSessionId" value="fd434733-8ffc-49f0-95e8-046312208409" />
+        <option name="activeSessionId" value="ca9b8240-fe41-4770-9d48-0a8495f3fa4e" />
         <option name="sessions">
           <session>
             <option name="chatType" value="PANEL" />
             <option name="id" value="fd434733-8ffc-49f0-95e8-046312208409" />
+            <option name="modeId" value="Agent" />
+            <option name="modelType" value="builtin_family" />
+            <option name="modelValue" value="auto" />
+            <option name="status" value="Completed" />
+            <option name="targetType" value="LOCAL" />
+          </session>
+          <session>
+            <option name="chatType" value="PANEL" />
+            <option name="id" value="a0ccb904-60c9-487a-8ea4-aea266c6a28c" />
+            <option name="modeId" value="Agent" />
+            <option name="modelType" value="builtin_family" />
+            <option name="modelValue" value="auto" />
+            <option name="targetType" value="LOCAL" />
+          </session>
+          <session>
+            <option name="chatType" value="PANEL" />
+            <option name="id" value="ca9b8240-fe41-4770-9d48-0a8495f3fa4e" />
             <option name="modeId" value="Agent" />
             <option name="modelType" value="builtin_family" />
             <option name="modelValue" value="auto" />
@@ -33,6 +83,12 @@
       <entry key="_C:/Users/nazie/Documents/GitHub/apex-league" value="3E81VKuAFExZlRnUqHqG5Z8ftFB" />
     </persistenceIdMap>
   </component>
+  <component name="CopilotUserSelectedModel">
+    <selectedModels>
+      <entry key="agent-panel" value="Auto" />
+      <entry key="chat-panel" value="Auto" />
+    </selectedModels>
+  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
@@ -40,37 +96,55 @@
     <commands />
     <urls />
   </component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "associatedIndex": 2,
-  "fromUser": false
-}]]></component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 2,
+  &quot;fromUser&quot;: false
+}</component>
   <component name="ProjectId" id="3E81VKuAFExZlRnUqHqG5Z8ftFB" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
+  <component name="ProjectSessionTemplates">
+    <option name="panelTemplate">
+      <template>
+        <option name="modeId" value="Agent" />
+        <option name="model">
+          <model>
+            <option name="modelType" value="builtin_family" />
+            <option name="modelValue" value="auto" />
+          </model>
+        </option>
+        <option name="targetType" value="LOCAL" />
+      </template>
+    </option>
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.MCP Project settings loaded": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "upgrade-frontend",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/nazie/Documents/GitHub/apex-league",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.MCP Project settings loaded&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;integration-fe-be&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/nazie/Documents/GitHub/apex-league&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -86,7 +160,8 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1779545405084</updated>
-      <workItem from="1779545408514" duration="607000" />
+      <workItem from="1779545408514" duration="2719000" />
+      <workItem from="1779601098674" duration="1170000" />
     </task>
     <servers />
   </component>

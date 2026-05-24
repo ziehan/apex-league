@@ -1,13 +1,15 @@
 package com.apexleague.game.screens;
 
 import com.apexleague.game.Main;
-import com.apexleague.game.state.GameManager;
+import com.apexleague.game.managers.GameManager;
 import com.apexleague.game.ui.MenuFactory;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Net;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.net.HttpRequestBuilder;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ButtonGroup;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -26,13 +28,7 @@ import java.util.List;
 
 public class GarageScreen implements Screen {
     private static final String[] CAR_TYPES = {
-        "red_car",
-        "blue_car",
-        "green_car",
-        "yellow_car",
-        "pink_car",
-        "purple_car",
-        "white_car"
+        "red_car", "blue_car", "green_car", "yellow_car", "pink_car", "purple_car", "white_car"
     };
 
     private final Main game;
@@ -47,6 +43,12 @@ public class GarageScreen implements Screen {
     public GarageScreen(Main game) {
         this.game = game;
         this.gameManager = GameManager.getInstance();
+
+        gameManager.p1CarType = (gameManager.lastUsedP1Car != null && !gameManager.lastUsedP1Car.isEmpty())
+            ? gameManager.lastUsedP1Car : "red_car";
+        gameManager.p2CarType = (gameManager.lastUsedP2Car != null && !gameManager.lastUsedP2Car.isEmpty())
+            ? gameManager.lastUsedP2Car : "blue_car";
+
         stage = new Stage(new ScreenViewport());
         skin = MenuFactory.createDefaultSkin();
         pitchTex = new Texture("images/football_pitch.png");
@@ -67,11 +69,13 @@ public class GarageScreen implements Screen {
         columns.add(buildSelectionColumn("P1 SELECTION", Color.SCARLET, true)).padRight(30f);
         columns.add(buildSelectionColumn("P2 SELECTION", Color.CYAN, false));
 
-        TextButton backButton = new TextButton("BACK", skin);
+        TextButton backButton = MenuFactory.createTextButton(skin, "BACK");
+        TextButton saveButton = MenuFactory.createTextButton(skin, "SIMPAN");
 
         Table bottomTable = new Table();
         bottomTable.add(p1StatLabel).padRight(60f);
-        bottomTable.add(backButton).width(200f).height(50f);
+        bottomTable.add(backButton).width(150f).height(50f).padRight(20f);
+        bottomTable.add(saveButton).width(150f).height(50f);
         bottomTable.add(p2StatLabel).padLeft(60f);
 
         Table root = new Table();
@@ -87,7 +91,54 @@ public class GarageScreen implements Screen {
         backButton.addListener(new ChangeListener() {
             @Override
             public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
-                game.setScreen(new MainMenuScreen(game));
+                game.goToMainMenu();
+            }
+        });
+
+        saveButton.addListener(new ChangeListener() {
+            @Override
+            public void changed(ChangeEvent event, com.badlogic.gdx.scenes.scene2d.Actor actor) {
+                saveButton.setText("SAVING...");
+                saveButton.setDisabled(true);
+
+                gameManager.lastUsedP1Car = gameManager.p1CarType;
+                gameManager.lastUsedP2Car = gameManager.p2CarType;
+
+                if (gameManager.currentUsername != null && !gameManager.currentUsername.isEmpty() && !gameManager.currentUsername.equalsIgnoreCase("GUEST")) {
+                    String payload = "{\"p1Car\":\"" + gameManager.p1CarType + "\",\"p2Car\":\"" + gameManager.p2CarType + "\"}";
+                    HttpRequestBuilder builder = new HttpRequestBuilder();
+                    Net.HttpRequest request = builder.newRequest()
+                        .method(Net.HttpMethods.PUT)
+                        .url(GameManager.API_BASE_URL + "/users/" + gameManager.currentUsername + "/cars")
+                        .header("Content-Type", "application/json")
+                        .content(payload)
+                        .build();
+
+                    if (gameManager.jwtToken != null && !gameManager.jwtToken.isEmpty()) {
+                        request.setHeader("Authorization", "Bearer " + gameManager.jwtToken);
+                    }
+
+                    Gdx.net.sendHttpRequest(request, new Net.HttpResponseListener() {
+                        @Override
+                        public void handleHttpResponse(Net.HttpResponse httpResponse) {
+                            Gdx.app.log("GARAGE", "Menyimpan P1: " + gameManager.p1CarType + " P2: " + gameManager.p2CarType);
+                            Gdx.app.postRunnable(() -> game.goToMainMenu());
+                        }
+
+                        @Override
+                        public void failed(Throwable t) {
+                            Gdx.app.error("GARAGE", "Gagal menyimpan", t);
+                            Gdx.app.postRunnable(() -> game.goToMainMenu());
+                        }
+
+                        @Override
+                        public void cancelled() {
+                            Gdx.app.postRunnable(() -> game.goToMainMenu());
+                        }
+                    });
+                } else {
+                    game.goToMainMenu();
+                }
             }
         });
     }
@@ -124,26 +175,19 @@ public class GarageScreen implements Screen {
     }
 
     @Override
-    public void pause() {
-    }
-
+    public void pause() {}
     @Override
-    public void resume() {
-    }
-
+    public void resume() {}
     @Override
     public void hide() {
         Gdx.input.setInputProcessor(null);
     }
-
     @Override
     public void dispose() {
         stage.dispose();
         skin.dispose();
         pitchTex.dispose();
-        for (Texture texture : carTextures) {
-            texture.dispose();
-        }
+        for (Texture texture : carTextures) { texture.dispose(); }
     }
 
     private Table buildSelectionColumn(String title, Color titleColor, boolean isPlayerOne) {
@@ -215,21 +259,9 @@ public class GarageScreen implements Screen {
     private String resolveCarTexturePath(String carType) {
         String safeType = carType == null || carType.isEmpty() ? "red_car" : carType;
         String basePath = "images/" + safeType + ".png";
-        if (Gdx.files.internal(basePath).exists()) {
-            return basePath;
-        }
-
+        if (Gdx.files.internal(basePath).exists()) { return basePath; }
         String dashedPath = "images/" + safeType.replace('_', '-') + ".png";
-        if (Gdx.files.internal(dashedPath).exists()) {
-            return dashedPath;
-        }
-
-        String spacedPath = "images/" + safeType.replace('_', ' ') + ".png";
-        if (Gdx.files.internal(spacedPath).exists()) {
-            return spacedPath;
-        }
-
+        if (Gdx.files.internal(dashedPath).exists()) { return dashedPath; }
         return "images/red_car.png";
     }
 }
-

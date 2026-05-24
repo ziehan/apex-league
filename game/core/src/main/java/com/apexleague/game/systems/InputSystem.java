@@ -6,7 +6,7 @@ import com.apexleague.game.commands.DriftCommand;
 import com.apexleague.game.commands.JumpCommand;
 import com.apexleague.game.commands.MoveCommand;
 import com.apexleague.game.components.InputComponent;
-import com.apexleague.game.state.GameManager;
+import com.apexleague.game.managers.GameManager;
 import com.badlogic.ashley.core.ComponentMapper;
 import com.badlogic.ashley.core.Entity;
 import com.badlogic.ashley.core.Family;

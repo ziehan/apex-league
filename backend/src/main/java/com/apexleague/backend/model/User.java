@@ -9,6 +9,7 @@ import jakarta.persistence.Table;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Entity
 @Table(name = "users")
@@ -16,7 +17,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
     @Column(nullable = false, unique = true)
     private String username;
@@ -48,12 +49,21 @@ public class User {
     @Column(name = "total_hat_tricks")
     private int totalHatTricks = 0;
 
+    @Column(name = "mmr")
+    private Integer mmr = 0;
+
+    @Column(name = "last_used_p1_car")
+    private String lastUsedP1Car = "red_car";
+
+    @Column(name = "last_used_p2_car")
+    private String lastUsedP2Car = "blue_car";
+
     @CreationTimestamp
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    public String getId() { return id; }
-    public void setId(String id) { this.id = id; }
+    public UUID getId() { return id; }
+    public void setId(UUID id) { this.id = id; }
     public String getUsername() { return username; }
     public void setUsername(String username) { this.username = username; }
     public String getPasswordHash() { return passwordHash; }
@@ -74,6 +84,12 @@ public class User {
     public void setTotalDemolitions(int totalDemolitions) { this.totalDemolitions = totalDemolitions; }
     public int getTotalHatTricks() { return totalHatTricks; }
     public void setTotalHatTricks(int totalHatTricks) { this.totalHatTricks = totalHatTricks; }
+    public Integer getMmr() { return mmr; }
+    public void setMmr(Integer mmr) { this.mmr = mmr; }
+    public String getLastUsedP1Car() { return lastUsedP1Car; }
+    public void setLastUsedP1Car(String lastUsedP1Car) { this.lastUsedP1Car = lastUsedP1Car; }
+    public String getLastUsedP2Car() { return lastUsedP2Car; }
+    public void setLastUsedP2Car(String lastUsedP2Car) { this.lastUsedP2Car = lastUsedP2Car; }
     public LocalDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
 }
