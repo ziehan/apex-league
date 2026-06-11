@@ -19,7 +19,23 @@ public class UserCarStatServiceImpl implements UserCarStatService {
 
     @Override
     public UserCarStat updateStats(UserCarStat stats) {
-        return userCarStatRepository.save(stats);
+        UserCarStat existing = userCarStatRepository.findById(stats.getId())
+                .orElseThrow(() -> new RuntimeException("UserCarStat tidak ditemukan dengan ID: " + stats.getId()));
+
+        if (stats.getCarModelId() != null) {
+            existing.setCarModelId(stats.getCarModelId());
+        }
+        if (stats.getWins() >= 0) {
+            existing.setWins(stats.getWins());
+        }
+        if (stats.getGoalsScored() >= 0) {
+            existing.setGoalsScored(stats.getGoalsScored());
+        }
+        if (stats.getMatchesPlayed() >= 0) {
+            existing.setMatchesPlayed(stats.getMatchesPlayed());
+        }
+
+        return userCarStatRepository.save(existing);
     }
 
     @Override
